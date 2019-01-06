@@ -1,0 +1,46 @@
+.tooltipCustomBarChart {
+    position: fixed;
+    background: transparent;
+    min-width: 50px;
+    /* min-height: 50px; */
+    /* padding: 10px; */
+    /* z-index: 10; */
+    }
+    .tooltipCustomBarChart table {
+    opacity: .9;
+    -moz-border-radius:5px;
+    border-radius: 5px;
+    color: black;
+    background: white;
+    -webkit-box-shadow: 2px 2px 5px 1px #ccc;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow:    2px 2px 5px 1px #ccc;  /* Firefox 3.5 - 3.6 */
+    box-shadow:         2px 2px 5px 1px #ccc;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    }
+
+    .tooltipCustomBarChart td {
+    padding: 2px 5px;
+    }
+
+    .tooltipCustomBarChart .key {
+    text-align: right;
+    color: black;
+    }
+
+    .tooltipCustomBarChart .value {
+    text-align: left;
+    font-weight: bold;
+    color: black;
+    }
+    /* .tick text {
+        font-size:12px;
+        fill: #B3B3B3 !important;
+
+    } */
+    .tick line{
+        stroke: transparent;
+    }
+
+    .containerDiv{
+        border: 1px solid rgba(19,29,40,.125);
+        border-radius: .25rem;   
+    }

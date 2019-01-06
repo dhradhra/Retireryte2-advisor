@@ -1,0 +1,995 @@
+<div class="page">
+	<div class="page-inner">
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<b>Home</b></a>
+						<a href="plans.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i><b>Plans</b></a>
+						<a href="plan.html" id="plan">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i><b>Plan</b></a>
+						<span>
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>
+							<span id="breadcrumb-title">New Plan</span>
+						</span>
+					</li>
+				</ol>
+			</nav>
+			<p class="lead">
+				<span id="plan-head" class="font-weight-bold">New Plan</span>
+			</p>
+			<hr class="bold-hr">
+			<p><span id="plan-subhead" class="grey-sub-head">Create a new plan tailored for your client</span></p>
+		</header>
+
+		<section id="base-style">
+			<form>
+				<fieldset class="card">
+					<div class="card-body">
+						<legend>Basic Information</legend>
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="form-group">
+									<label for="plan_name">Plan name</label>
+									<input type="text" class="form-control" placeholder="Plan Name" id="plan_name">
+								</div>
+
+								<div class="form-group">
+									<label for="description">Brief description</label>
+									<textarea class="form-control" maxlength="255" rows="3" id="description"></textarea>
+								</div>
+							</div>
+
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="form-group">
+									<label for="wage">How much money do you make a month?</label>
+									<div class="input-group m-b-15">
+										<div class="input-group-prepend">
+											<span class="input-group-text ">$</span>
+										</div>
+										<input type="text" class="form-control m-b-0-i punctuation" id="wage">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="threshold">What is your Threshold to patch holes in the plan?</label>
+									<input type="text" class="form-control" id="threshold">
+								</div>
+							</div>
+
+							<div class="col-12">
+								<div class="array form-group" id="investors">
+									<legend>Investors</legend>
+
+									<div class="form-parent invisible-div bottom-margin-none">
+										<label for="type">Type</label>
+										<input type="text" class="type form-control" id="type">
+
+										<label for="age">Age</label>
+										<input type="text" class="age form-control" id="age">
+
+										<label for="wage2">Wage</label>
+										<div class="input-group m-b-15">
+											<div class="input-group-prepend">
+												<span class="input-group-text ">$</span>
+											</div>
+											<input type="text" class="wage form-control m-b-0-i punctuation" id="wage2">
+										</div>
+
+										<label for="cash">Cash</label>
+										<div class="input-group m-b-15" 8>
+											<div class="input-group-prepend">
+												<span class="input-group-text ">$</span>
+											</div>
+											<input type="text" class="cash form-control m-b-0-i punctuation" id="cash">
+										</div>
+
+										<label for="retirement_age3">Retirement age</label>
+										<input type="text" class="retirement_age form-control m-b-0-i" id="retirement_age3">
+
+										<label for="towards_month2">Towards month</label>
+										<div class="input-group m-b-15">
+											<div class="input-group-prepend">
+												<span class="input-group-text ">$</span>
+											</div>
+											<input type="text" class="towards_month form-control m-b-0-i punctuation" id="towards_month2">
+										</div>
+
+										<label for="live_of_month2">Live of month</label>
+										<div class="input-group m-b-15">
+											<div class="input-group-prepend">
+												<span class="input-group-text ">$</span>
+											</div>
+											<input type="text" class="live_of_month form-control m-b-0-i punctuation" id="live_of_month2">
+										</div>
+
+										<label for="life_expectancy">Life expectancy</label>
+										<div class="input-group m-b-15">
+											<div class="input-group-prepend">
+												<span class="input-group-text ">$</span>
+											</div>
+											<input type="text" class="life_expectancy form-control m-b-0-i punctuation" id="life_expectancy">
+										</div>
+									</div>
+
+									<a class="btn add-btn-latest plus-icon investors-min-height">
+										<i class="fas fa-plus"></i>Add New
+									</a>
+								</div>
+							</div>
+
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="form-group">
+									<label for="towards_month">How much are you willing to invest until retirement?</label>
+									<div class="input-group m-b-15">
+										<div class="input-group-prepend">
+											<span class="input-group-text ">$</span>
+										</div>
+
+										<input type="text" class="form-control m-b-0-i punctuation" id="towards_month">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="live_of_month">How much do you want to have during retirement?</label>
+									<div class="input-group m-b-15">
+										<div class="input-group-prepend">
+											<span class="input-group-text ">$</span>
+										</div>
+
+										<input type="text" class="form-control m-b-0-i punctuation" id="live_of_month">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="after_the_plan_ends">How much do you want to have after retirement?</label>
+									<div class="input-group m-b-15">
+										<div class="input-group-prepend">
+											<span class="input-group-text ">$</span>
+										</div>
+
+										<input type="text" class="form-control m-b-0-i punctuation" id="after_the_plan_ends">
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="form-group">
+									<label for="probability_success_percentage">Success percentage accepted?</label>
+									<div class="input-group m-b-15">
+										<div class="input-group-prepend">
+											<span class="input-group-text ">%</span>
+										</div>
+
+										<input type="number" class="form-control m-b-0-i" id="probability_success_percentage">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="importance">What is important to you?</label>
+									<input type="text" class="form-control" id="importance">
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-12">
+								<div class="object form-group " id="spread">
+									<legend>Spread</legend>
+									<div class="row">
+										<div class="col-lg-6 col-md-6 col-12">
+											<label for="fix_rate">Fixrate</label>
+											<div class="input-group m-b-15">
+												<div class="input-group-prepend">
+													<span class="input-group-text ">%</span>
+												</div>
+												<input type="text" class="form-control m-b-0-i" id="fix_rate">
+											</div>
+											<label for="principal_at_risk">Principal at risk</label>
+											<div class="input-group m-b-15">
+												<div class="input-group-prepend">
+													<span class="input-group-text ">%</span>
+												</div>
+												<input type="text" class="form-control m-b-0-i" id="principal_at_risk">
+											</div>
+											<label for="principal_protected">Principal protected</label>
+											<div class="input-group m-b-15">
+												<div class="input-group-prepend">
+													<span class="input-group-text ">%</span>
+												</div>
+												<input type="text" class="form-control m-b-0-i" id="principal_protected">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="array form-group" id="dreams">
+							<legend>Dreams</legend>
+
+							<div class="form-parent invisible-div">
+								<label for="name">Name</label>
+								<input type="text" class="name form-control" id="name">
+
+								<label for="date2">Date</label>
+								<div class="input-group m-b-15">
+									<div class="input-group-prepend">
+										<span class="input-group-text ">
+											<i class="fas fa-calendar"></i>
+										</span>
+									</div>
+									<input type="text" class="date form-control m-b-0-i" id="date2">
+								</div>
+
+								<label for="price">Price</label>
+								<div class="input-group m-b-15">
+									<div class="input-group-prepend">
+										<span class="input-group-text ">$</span>
+									</div>
+									<input type="text" class="price form-control m-b-0-i punctuation" id="price">
+								</div>
+							</div>
+
+							<a class="btn add-btn-latest plus-icon dreams-min-height">
+								<i class="fas fa-plus"></i>Add New
+							</a>
+						</div>
+
+						<div class="array form-group" id="investments">
+							<legend>Investments</legend>
+
+							<div class="form-parent invisible-div">
+								<label for="name1">Name</label>
+								<input type="text" class="name form-control" id="name1">
+
+								<label for="payment">Payment</label>
+								<div class="input-group m-b-15">
+									<div class="input-group-prepend">
+										<span class="input-group-text ">$</span>
+									</div>
+									<input type="text" class="payment form-control m-b-0-i punctuation" id="payment">
+								</div>
+							</div>
+
+							<a class="btn add-btn-latest plus-icon investment-min-height">
+								<i class="fas fa-plus"></i>Add New
+							</a>
+						</div>
+
+						<div class="array form-group" id="inflows">
+							<legend>Inflows</legend>
+
+							<div class="form-parent invisible-div">
+								<label for="name2">Name</label>
+								<input type="text" class="name form-control" id="name2">
+
+								<label for="date">Date</label>
+								<div class="input-group m-b-15">
+									<div class="input-group-prepend">
+										<span class="input-group-text ">
+											<i class="fas fa-calendar"></i>
+										</span>
+									</div>
+									<input type="text" class="date form-control m-b-0-i" id="date">
+								</div>
+
+								<label for="ammount">Ammount</label>
+								<div class="input-group m-b-15">
+									<div class="input-group-prepend">
+										<span class="input-group-text ">$</span>
+									</div>
+									<input type="text" class="ammount form-control m-b-0-i punctuation" id="ammount">
+								</div>
+
+								<label class="d-block">Is sure</label>
+								<div class="radio-margin-bottom">
+									<div class="custom-control custom-control-inline custom-radio">
+										<input type="radio" class="is_sure form-control custom-control-input" name="rdGroup1" value="true" checked id="yes">
+										<label class="custom-control-label" for="yes">Yes</label>
+									</div>
+
+									<div class="custom-control custom-control-inline custom-radio">
+										<input type="radio" value="false" class="is_sure form-control custom-control-input" name="rdGroup1" id="no">
+										<label class="custom-control-label" for="no">No</label>
+									</div>
+								</div>
+							</div>
+
+							<a class="btn add-btn-latest plus-icon inflows-min-height">
+								<i class="fas fa-plus"></i>Add New
+							</a>
+						</div>
+
+						<div class="array form-group" id="expenses">
+							<legend>Expenses</legend>
+
+							<div class="form-parent invisible-div">
+								<label for="name3">Name</label>
+								<input type="text" class="name form-control" id="name3">
+
+								<label for="payment2">Payment</label>
+								<div class="input-group m-b-15">
+									<div class="input-group-prepend">
+										<span class="input-group-text ">$</span>
+									</div>
+									<input type="text" class="payment form-control m-b-0-i punctuation" id="payment2">
+								</div>
+							</div>
+
+							<a class="btn add-btn-latest plus-icon expenses-min-height">
+								<i class="fas fa-plus"></i>Add New
+							</a>
+						</div>
+
+						<div class="array form-group" id="other_income">
+							<legend>Other Income</legend>
+
+							<div class="form-parent invisible-div">
+								<label for="name4">Name</label>
+								<input type="text" class="name form-control" id="name4">
+
+								<label for="ammount2">Amount</label>
+								<div class="input-group m-b-15">
+									<div class="input-group-prepend">
+										<span class="input-group-text ">$</span>
+									</div>
+									<input type="text" class="ammount form-control m-b-0-i punctuation" id="ammount2">
+								</div>
+							</div>
+
+							<a class="btn add-btn-latest plus-icon other-income-min-height">
+								<i class="fas fa-plus"></i>Add New
+							</a>
+						</div>
+					</div>
+				</fieldset>
+
+				<div class="form-actions card btm-btn-padd d-block">
+					<button onclick="window.history.back()" class="btn btn-yellow">Back</button>
+
+					<button id="btn_save" type="submit" class="btn btn-success">Save</button>
+				</div>
+			</form>
+		</section>
+	</div>
+</div>
+
+<script>
+	//
+	//	Initialize all the calendar controls.
+	//
+	$(".date").datepicker();
+
+	//
+	//	Change  format of each input containing money amount.
+	//
+	$('.punctuation').number(true, 2);
+
+	//
+	//	Add more feild On click to Add more button.
+	//
+	$('.plus-icon').click(function () {
+
+		//
+		//	1.	Call function to Add more specific field.
+		//
+		add_field(this);
+	})
+
+	//
+	//	Function to remove field.
+	//
+	function remove_field(element)
+	{
+		//
+		//	1.	Remove spsecific section of field.
+		//
+		$(element).parent('div').first().remove();
+	}
+
+	//
+	//	Function to Add more field.
+	//
+	function add_field(element)
+	{
+		//
+		//	1.	Create a clone of add more button to place it as last element.
+		//
+		var add_more = $(element).clone(true);
+
+		//
+		//	2.	Get parent div of specific array field.
+		//
+		var array = $(element).closest('div[class^="array"]');
+
+		//
+		//	3.	Get parent div where new form group will be appended.
+		//
+		var container = array.children('div').first();
+
+		//
+		//	4.	Make clone of div containing all inputs to attach which is
+		//		hidden by default to be used as a template.
+		//
+		var content = array
+						.find('div[class^="form-parent invisible-div"]')
+						.first()
+						.clone(true);
+
+		//
+		//	5.	Unhide the cloned div.
+		//
+		content.removeClass('invisible-div');
+
+		//
+		//	6.	Append remove button into new div of inputs to remove itself.
+		//
+		content.append(`<a class="btn btn-danger-new minus-icon"
+		onclick="remove_field(this)">Remove <i class="fas fa-minus"></i></a>`);
+
+		//
+		//	7.	Get all inputs of cloned div.
+		//
+		var inputs = content.find('input');
+
+		//
+		//	8.	Make a loop of Input array to change their id.
+		//
+		//		To-Do: 	why is that? What problem we want to solve wit this
+		//				approach?
+		//
+		inputs.each(function() {
+
+			//
+			//	1.	Make a random  number.
+			//
+			var random = Math.random();
+
+			//
+			//	2.	Get id of input.
+			//
+			var id = $(this).attr('id');
+
+			//
+			//	3.	Give label a random number as a 'for' value.
+			//
+			content.find(`label[for^="${id}"]`).attr('for', random);
+
+			//
+			//	4.	Change the id of input exists in new section of field.
+			//
+			$(this).attr('id', random);
+
+			//
+			//	5.	Check if input is a  radio.
+			//
+			if($(this).is(':radio'))
+			{
+				//
+				//	1.	Get the value of name attribute of input.
+				//
+				var name = $(this).attr('name');
+
+				//
+				//	2.	Give the same value of name attribute to each radio.
+				//
+				content.find(`input[name^="${name}"]`).attr('name', random);
+
+				//
+				//	3.	Uncheck the cloned radio.
+				//
+				$(this).prop('checked', false);
+
+				//
+				//	4.	Mark default check on radio having value 'true'.
+				//
+				content.find(":radio[value=true]").prop('checked',true);
+			}
+
+			//
+			//	6.	For each input aside from the radio one, we want to reset
+			//		the state/value.
+			//
+			if(!$(this).is(':radio'))
+			{
+				//
+				//	1.	Blank the value of input regardless of its original
+				//		state to get copy of blank input.
+				//
+				$(this).val("");
+			}
+
+			//
+			//	7.	Reinitialize duplicate datepicker that acts separately.
+			//
+			content.find('.date').datepicker("destroy").datepicker();
+
+		})
+
+		//
+		//	9.	Append div to Add more more new fields.
+		//
+		content.appendTo(array);
+
+		//
+		//	10.	Remove button to place it at last position.
+		//
+		$(element).remove()
+
+		//
+		//	11.	Append the button as a last element.
+		//
+		add_more.appendTo(array);
+
+		//
+		//	12.	Return the cloned div.
+		//
+		return content;
+	}
+
+	//
+	//	Get all the query string values from url
+	//
+	var queries = parse_the_url();
+
+	//
+	//	Update crumbs with proper URL
+	//
+	update_crumbs(queries);
+
+	//
+	//	Run the following query only when we are editing a plan, and not when
+	//	we are creating one.
+	//
+	if(queries.action == 'edit')
+	{
+		//
+		//	1.	Start the spinner only when we are editing, because only then
+		//		there will be data that needs to be loaded.
+		//
+		$('.spinner_overlay').show();
+
+		//
+		//	2.	Get a fresh set of credentials.
+		//
+		get_credentials(cognit_user, function(error, obj) {
+
+			//
+			//	1.	DDB query
+			//
+			var params = {
+				TableName : 'Plan',
+				Key: {
+					id: queries.plan_id
+				}
+			};
+
+			//
+			//	->	Execute the command
+			//
+			obj.ddb.get(params, function(error, data) {
+
+				//
+				//	1.	Check if there was an internal error
+				//
+				if(error)
+				{
+					return console.error(error);
+				}
+
+				//
+				//	2.	Populate the form with all the data from the DB.
+				//
+				populate_form_with_arrays(data.Item.form_data);
+
+				//
+				//	3.	Stop the spinner
+				//
+				$('.spinner_overlay').hide();
+
+			});
+
+		})
+	}
+
+	//
+	//	React to when the Advisor submits the form
+	//
+	$('form').on("submit", function(event) {
+
+		//
+		//	1.	Start the spinner
+		//
+		$('.spinner_overlay').show();
+
+		//
+		//	2.	Prevent the default form action so we can process the action
+		//		our way.
+		//
+		event.preventDefault();
+		event.stopPropagation();
+
+		//
+		//	3.	Disable the button to prevent people to keep clicking on it
+		//		while we are saving.
+		//
+		$('#btn_save').addClass("disabled");
+
+		//
+		//	4.	Update the button to inform the user we are saving
+		//
+		$('#btn_save').text("Saving...");
+
+		//
+		//	5.	Scrape the non-array and non-object fields of form.
+		//
+		let string_fields = scrape_form($("form :input"));
+
+		//
+		//	6.	Scrape the whole object fields of form.
+		//
+		let object_fields = scrap_object();
+
+		//
+		//	7.	Scrape the whole array fields of form.
+		//
+		let array_fields = scrap_array();
+
+		//
+		//	8.	Merge all fields.
+		//
+		let form_data = Object.assign(string_fields, object_fields, array_fields);
+
+		//
+		//	9.	Get fresh credentials from Cognito
+		//
+		get_credentials(cognit_user, function(error, obj) {
+
+			//
+			//	1.	Create a bucket with all the data needed for he chain.
+			//
+			var container = {
+				form_data: form_data,
+				url: window.location.href,
+				obj: obj,
+				queries: queries,
+				edit: queries.action
+			}
+
+			//
+			//	->	Start the chain
+			//
+			crounch_the_numbers(container)
+				.then(function(container) {
+
+					history.back();
+
+				}).catch(function(error) {
+
+					console.error(error);
+
+				})
+		})
+
+
+	});
+
+	//	 _____    _____     ____    __  __   _____    _____   ______    _____
+	//	|  __ \  |  __ \   / __ \  |  \/  | |_   _|  / ____| |  ____|  / ____|
+	//	| |__) | | |__) | | |  | | | \  / |   | |   | (___   | |__    | (___
+	//	|  ___/  |  _  /  | |  | | | |\/| |   | |    \___ \  |  __|    \___ \
+	//	| |      | | \ \  | |__| | | |  | |  _| |_   ____) | | |____   ____) |
+	//	|_|      |_|  \_\  \____/  |_|  |_| |_____| |_____/  |______| |_____/
+	//
+
+	//
+	//	After we have all the data from the form, we pass it to a AWS Lambda
+	//	for processing.
+	//
+	function crounch_the_numbers(container)
+	{
+		return new Promise(function(resolve, reject) {
+
+			let data = {
+				//
+				//	Default data.
+				//
+				form_data: container.form_data,
+				advisor_id: container.obj.cognito_id,
+				investor_id: container.queries.investor_id,
+				//
+				//	Only used when editing.
+				//
+				edit: container.edit,
+				plan_id: container.queries.plan_id
+			}
+
+			console.log(data);
+
+			//
+			//	1.	Query
+			//
+			let params = {
+				FunctionName: "Financial-Calculation",
+				Payload: JSON.stringify(data)
+			};
+
+			console.log(params)
+
+			//
+			//	->	Execute the query
+			//
+			container.obj.lambda.invoke(params, function(error, data) {
+
+				//
+				//	1.	Stop the spinner
+				//
+				$('.spinner_overlay').hide();
+
+				//
+				//	2.	Check for internal errors
+				//
+				if(error)
+				{
+					return reject(error);
+				}
+
+				//
+				//	3.	Change the state of the button, once all the data was
+				//		crouched.
+				//
+				$('#btn_save').text("Done!");
+
+				//
+				//	->	Move to the next chain
+				//
+				return resolve(container)
+
+			});
+
+		});
+	}
+
+	//	 ______  _    _  _   _   _____  _______  _____  ____   _   _   _____
+	//	|  ____|| |  | || \ | | / ____||__   __||_   _|/ __ \ | \ | | / ____|
+	//	| |__   | |  | ||  \| || |        | |     | | | |  | ||  \| || (___
+	//	|  __|  | |  | || . ` || |        | |     | | | |  | || . ` | \___ \
+	//	| |     | |__| || |\  || |____    | |    _| |_| |__| || |\  | ____) |
+	//	|_|      \____/ |_| \_| \_____|   |_|   |_____|\____/ |_| \_||_____/
+	//
+
+	//
+	//	Update the BreadCrumbs to update the querystring with URL
+	//
+	function update_crumbs(queries)
+	{
+		//
+		//	1.	Make the query URL for plans page.
+		//
+		var query = $("a[href='plans.html']").attr('href')
+			+ "?investor_id="
+			+ queries.investor_id;
+
+		//
+		//	2.	Append the query to the anchor.
+		//
+		$("a[href='plans.html']").attr('href', query);
+
+		//
+		//	3.	Do following changes if page is opened for editing a plan.
+		//
+		if(queries.action == 'edit')
+		{
+			//
+			//	1.	Change the breadcrumb text.
+			//
+			$('#breadcrumb-title').text("Edit Plan");
+
+			//
+			//	2.	Make the query URL for plan page.
+			//
+			var plan_query = $("#plan").attr('href')
+				+ "?plan_id="
+				+ queries.plan_id
+				+ "&investor_id="
+				+ queries.investor_id;
+
+			//
+			//	3.	Append the plan_query to the anchor.
+			//
+			$("#plan").attr('href', plan_query);
+
+			//
+			//	4.	Change the heading text.
+			//
+			$("#plan-head").text("Edit Plan");
+
+			//
+			//	5.	Change the sub heading text.
+			//
+			$("#plan-subhead").text("Edit plan tailored for your client");
+		}
+
+		//
+		//	4.	Do following changes if page is opened for adding a plan.
+		//
+		if(queries.action != 'edit')
+		{
+			//
+			//	1.	Remove the plan breadcrumb element.
+			//
+			$("#plan").remove();
+		}
+	}
+
+	//
+	//	Loop over all the data that we got from the DB, and populate the
+	//	forms with array values, objects values and normal values, and
+	//	generate a complete filled form with all the multiple options etc.
+	//
+	function populate_form_with_arrays(data)
+	{
+		//
+		//	1.	Loop over all the data that we got from the DDB.
+		//
+		for(var parent_key in data)
+		{
+			//
+			//	1.	Content of a specific array field.
+			//
+			var content = data[parent_key];
+
+			//
+			//	2.	If content of data is an array, build as many form-groups
+			//		of html as the length of the array.
+			//
+			if(Array.isArray(content))
+			{
+				//
+				//	1.	Add form-group of array and get reference.
+				//
+				var form_group = add_field($("#" + parent_key)
+									.find('.add-btn-latest'));
+
+				//
+				//	2.	Access all the array type form group and populate them.
+				//
+				$.each(content, function (index, val) {
+
+					//
+					//	1.	Access key/value of specific object elements and
+					//		use it to populate each content.
+					//
+					for(var child_key in val)
+					{
+						//
+						//	1.	Get input fields having specific class.
+						//
+						var input = form_group.find('.' + child_key);
+
+						//
+						//	2.	Check if input control is radio or not.
+						//
+						var is_radio = form_group
+										.find('.' + child_key)
+										.is(':radio');
+
+						//
+						//	3.	If input is radio then mark on specific radio.
+						//
+						if(is_radio)
+						{
+							//
+							//	1.	Check if the  value of input is true.
+							//
+							if(val[child_key] == true)
+							{
+								//
+								//	1.	Mark the radio as selected.
+								//
+								form_group
+									.find('input[value="true"]')
+									.prop('checked', true);
+							}
+
+							//
+							//	2.	Check if the  value of input is false.
+							//
+							if(val[child_key] == false)
+							{
+								//
+								//	1.	Mark the radio as selected.
+								//
+								form_group
+									.find('input[value="false"]')
+									.prop('checked', true);
+							}
+						}
+
+						//
+						//	4.	Check if input control is date or not.
+						//
+						var is_date = form_group
+										.find('.' + child_key)
+										.hasClass('date');
+
+						//
+						//	5.	If input control is date then change it from
+						//		timestamp to simple readable string date.
+						//
+						if(is_date)
+						{
+							//
+							//	1.	Get date in string format from timestamp.
+							//
+							var date_in_string = new Date(val[child_key]).toLocaleDateString('en-US');
+
+							//
+							//	2.	Give the value to input.
+							//
+							input.val(date_in_string);
+						}
+
+						//
+						//	6.	Check if input is a normal input control.
+						//
+						if(!is_radio && !is_date)
+						{
+							//
+							//	1.	Give the value to input.
+							//
+							input.val(val[child_key]);
+						}
+					}
+
+					//
+					//	2.	Add form of input controls for next object of array
+					//
+					if(index < content.length - 1)
+					{
+						//
+						//	1.	Add one more form-group of array and get
+						//		reference.
+						//
+						form_group = add_field($("#" + parent_key).find('.add-btn-latest'));
+					}
+
+				})
+
+				//
+				//	3.	Move to next cursor of loop to skip rest code.
+				//
+				continue;
+			}
+
+			//
+			//	3.	Do following if we get object from DB.
+			//
+			if(!Array.isArray(content) && typeof content == 'object')
+			{
+				//
+				//	1.	Loop to access key/value of object elements.
+				//
+				for(var parent_key in content)
+				{
+					//
+					//	1.	Set content of each span relates to the object.
+					//
+					$("#" + parent_key).val(content[parent_key]);
+				}
+
+				//
+				//	2.	Move to next cursor of loop to skip rest code.
+				//
+				continue;
+			}
+
+			//
+			//	4.	This is to set content of fields except type array and
+			//		object.
+			//
+			$("#" + parent_key).val(content);
+		}
+	}
+
+</script>

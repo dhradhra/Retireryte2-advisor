@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+      - npm install
+      - npm i -g @0x4447/potato
+      - apt-get update
+      - apt-get install imagemagick -y
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+      - echo $CODEBUILD_SOURCE_VERSION
+      - PULL_REQUEST=true
+      - echo $CODEBUILD_SOURCE_VERSION | grep -q "pr" || PULL_REQUEST=false
+  build:
+    commands:
+      - echo Entered the build phase on `date`...
+      - echo Building the site.
+      - npm run build
+      - echo Converting all JPGs in to progressive JPGs.
+      - find ./_output/assets/img -iname \*.jpg -exec convert {} -interlace plane {} \;
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - if $PULL_REQUEST; then
+          echo Site not deployed becasue this is a Pull Request.;
+        else
+          potato -s _output -u -b advisor.retireryte.net;
+        fi
+      - echo Build completed on `date`.

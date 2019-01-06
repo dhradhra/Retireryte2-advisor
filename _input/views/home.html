@@ -1,0 +1,608 @@
+<style>
+	.card-metric {
+		margin: 0 13px;
+	}
+	.thead-btn .selected-row-info{
+		display: none;
+	}
+</style>
+
+<div class="page">
+	<div class="page-inner">
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<span>Home</span>
+					</li>
+				</ol>
+			</nav>
+
+			<p class="lead">
+				<span class="font-weight-bold">Advisors Dashboard</span>
+				<hr class="bold-hr">
+			</p>
+		</header>
+
+		<div class="page-section">
+			<div class="section-block">
+				<div class="metric-row justify-content-between">
+
+					<div class="col-lg-3 card-metric">
+						<div class="metric align-items-center">
+							<h2 class="metric-label">Total Investors</h2>
+
+							<p class="metric-value h3">
+								<sub><i class="oi oi-people"></i></sub>
+
+								<span id="stats_investors" class="value">0</span>
+							</p>
+
+						</div>
+					</div>
+
+					<div class="col-lg-3 card-metric">
+						<div class="metric align-items-center">
+							<h2 class="metric-label">Invitation Accepted</h2>
+
+							<p class="metric-value h3">
+								<sub><i class="fa fa-tasks"></i></sub>
+
+								<span id="stats_accepted" class="value">0</span>
+							</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3 card-metric">
+						<div class="metric align-items-center">
+							<h2 class="metric-label">Invited</h2>
+							<p class="metric-value h3">
+								<sub><i class="oi oi-fork"></i></sub>
+
+								<span id="stats_invited" class="value">0</span>
+							</p>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<section class="card card-fluid">
+				<header class="card-header">
+					<ul class="nav nav-tabs card-header-tabs">
+						<li class="nav-item">
+							<a class="nav-link active show" id="all" data-toggle="tab" href="#tab1">All</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" id="pending" data-toggle="tab" href="#tab2">Pending Invitation</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" id="accepted" data-toggle="tab" href="#tab3">Accepted Invitation</a>
+						</li>
+
+						<a class="btn btn-primary btn-invite-investor ml-auto align-self-end" href="invite_investor.html" role="button">Invite new investor</a>
+					</ul>
+				</header>
+
+				<div class="card-body">
+					<div class="form-group">
+						<div class="input-group input-group-alt">
+							<div class="input-group has-clearable">
+								<button id="clear-search" type="button" class="close" aria-label="Close">
+									<span aria-hidden="true">
+										<i class="fa fa-times-circle"></i>
+									</span>
+								</button>
+
+								<div class="input-group-prepend">
+									<span class="input-group-text">
+										<span class="oi oi-magnifying-glass"></span>
+									</span>
+								</div>
+
+								<input id="table-search" type="text" class="form-control" placeholder="Search products">
+							</div>
+						</div>
+					</div>
+
+					<table id="tbl_investors" class="display table table-bordered table-striped table-brdr-clr">
+						<thead>
+
+							<tr>
+
+								<th>First Name</th>
+
+								<th>Last Name</th>
+
+								<th>Invitation</th>
+
+							</tr>
+
+						</thead>
+
+						<tbody>
+							<tr class="odd">
+								<td valign="top" colspan="4" class="dataTables_empty">
+									<div class="table-spinner">
+										<div class="spinner">Loading...</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<!--
+
+	The Modal
+
+-->
+<div class="modal fade" id="confirmDelete">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Delete Permanently</h4>
+
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				Are you sure about this ?
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+				<button type="button" class="btn btn-danger" id="confirm">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+//
+//	Get fresh credentials from Cognito
+//
+get_credentials(cognit_user, function(error, obj) {
+
+	//
+	//	1.	Check for internal errors
+	//
+	if(error)
+	{
+		console.error(error);
+	}
+
+	//
+	//	2.	Create a container that will be passed between promises so
+	//		we have one central place where all the data goes
+	//
+	var container = {
+		//
+		//	Holds all the Cognito related data and AWS authenticated
+		//	services.
+		//
+		obj: obj,
+		//
+		//	Hold a list of all the investors ID the Advisor manages
+		//
+		investors_ids: [],
+		//
+		//	Holds a list of all the investors details
+		//
+		investors: [],
+		//
+		//	Hold all the stats that will be displayed on the home page
+		//
+		stats: {
+			approved: 0,
+			invited: 0,
+			sum: 0
+		}
+	};
+
+	//
+	//	->	Start the chain
+	//
+	get_investors_ids(container)
+		.then(function(container) {
+
+			return get_investors_details(container);
+
+		}).then(function(container) {
+
+			return head_count(container);
+
+		}).then(function(container) {
+
+			return render_stats(container);
+
+		}).then(function(container) {
+
+			return render_the_table(container);
+
+		}).then(function(container) {
+
+			console.log('Home Table is Ready.');
+
+		}).catch(function(error) {
+
+			console.error(error);
+
+		});
+
+});
+
+//
+//	Query the DDB to get all the Investors that the Agent manages
+//
+function get_investors_ids(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName : 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ProjectionExpression: "investors"
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Check if the Advisor has investors, and only then we
+			//		populate the array.
+			//
+			if(data.Item.investors)
+			{
+				//
+				//	1.	Loop over the array with individual Hash Keys
+				//
+				data.Item.investors.forEach(function(data) {
+
+					//
+					//	1.	Add a object that represents the unique Hash Key
+					//
+					container.investors_ids.push({
+						cognito_id: data
+					});
+
+				});
+			}
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	Once we have all the investor Hash Keys that belongs to an Agent we use
+//	those Keys to do a batch query and get all the Investors details
+//
+function get_investors_details(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Skip this step if the Advisor has no Investors
+		//
+		if(container.investors_ids.length == 0)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	DDB query
+		//
+		var params = {
+			RequestItems: {
+				'Users': {
+					Keys: container.investors_ids
+				}
+			}
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.batchGet(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Save the response for the next Promise
+			//
+			container.investors = data.Responses.Users
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	Once we have all the Investors we can extract some interesting stats
+//
+function head_count(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Skip this step if the Advisor has no Investors
+		//
+		if(container.investors_ids.length == 0)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	Loop over all the investor and see the different counts
+		//
+		container.investors.forEach(function(data) {
+
+			//
+			//	1.	Count each Investor as a total.
+			//
+			container.stats.sum++;
+
+			//
+			//	2.	Check if the Invited flag is present.
+			//
+			if(data.invited)
+			{
+				container.stats.invited++;
+			}
+
+			//
+			//	3.	Check if the Invited flag is undefined.
+			//
+			if(!data.invited)
+			{
+				container.stats.approved++;
+			}
+
+		});
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	Once the stats are being proceed, we display the result on the page.
+//
+function render_stats(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Skip this step if the Advisor has no Investors
+		//
+		if(container.investors_ids.length == 0)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	update the dashboard with live data
+		//
+		$('#stats_investors').text(container.stats.sum)
+		$('#stats_invited').text(container.stats.invited)
+		$('#stats_accepted').text(container.stats.approved)
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	After we query the DDB and collect all the data that we care about we
+//	can render the table.
+//
+function render_the_table(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Create the table object
+		//
+		var table = $('#tbl_investors').DataTable({
+			dom: `<'text-muted'Bi>
+			<'table-responsive'tr>
+			<p>`,
+			buttons: [
+				'copyHtml5',
+				{ extend: 'print', autoPrint: false }
+			],
+			language: {
+				paginate: {
+					previous: 'Prev',
+					next: 'Next'
+				},
+				sLoadingRecords : '<div class="table-spinner"><div class="spinner">Loading...</div></div>',
+				sProcessing: '<div class="table-spinner"><div class="spinner">Loading...</div></div>'
+			},
+			bInfo: false,
+			autoWidth: false,
+			data: container.investors,
+			deferRender: true,
+			order: [0, 'asc'],
+			columns: [
+				{ data: 'contact.first_name' },
+				{ data: 'contact.last_name' },
+				{ data: 'invited' }
+			],
+			columnDefs: [
+				{
+					targets: 0,
+					render: function (data, type, row, meta) {
+						return (row.invited) ? `<span>${row.contact.first_name}</span>` : `<a href="plans.html?investor_id=${row.cognito_id}">${row.contact.first_name}</a>`
+					}
+				},
+				{
+					targets: 1,
+					render: function (data, type, row, meta) {
+						return (row.invited) ? `<span>${(row.contact.last_name != undefined && row.contact.last_name.trim() != '') ? row.contact.last_name : 'N/A'}</span>` : `<a href="plans.html?investor_id=${row.cognito_id}">${(row.contact.last_name != undefined && row.contact.last_name.trim() != '') ? row.contact.last_name : 'N/A'}</a>`
+					}
+				},
+				{
+					targets: 2,
+					render: function (data, type, row, meta) {
+						return (row.invited) ? "Pending" : "Accepted";
+					}
+				}
+			]
+		});
+
+		//
+		//	1.	Searching based on names only
+		//
+		$('#table-search').on('keyup', function() {
+
+			table.column(0).search( this.value ).draw();
+
+		});
+
+		//
+		//	2.	Reset table on clearing search box
+		//
+		$('#clear-search').on('click', function() {
+
+			table.column(0).search('').draw();
+
+		});
+
+		//
+		//	3.	Filtering Pending Invitations
+		//
+		$('#pending').on('click', function() {
+
+			//
+			//	1.	Remove existing filters
+			//
+			$.fn.dataTable.ext.search.pop();
+
+			//
+			//	2.	Adding custom filter to show only pending invitations
+			//
+			$.fn.dataTable.ext.search.push(
+				function(settings, data, dataIndex)
+				{
+					return (data[3] == 'Pending') ? true : false;
+				}
+			);
+
+			//
+			//	3.	Show table data with custom filters
+			//
+			table.draw();
+
+		});
+
+		//
+		//	4.	Filtering Accepted Invitations
+		//
+		$('#accepted').on('click', function() {
+
+			//
+			//	1.	Remove existing filters
+			//
+			$.fn.dataTable.ext.search.pop();
+
+			//
+			//	2.	Adding custom filter to show only accepted invitations
+			//
+			$.fn.dataTable.ext.search.push(
+				function(settings, data, dataIndex)
+				{
+					return (data[3] == 'Accepted') ? true : false;
+				}
+			);
+
+			//
+			//	3.	Show table data with custom filters
+			//
+			table.draw();
+
+		});
+
+		//
+		//	5.	Reset table to show All Invitations
+		//
+		$("#all").click(function() {
+
+			//
+			//	1.	Remove existing filters
+			//
+			$.fn.dataTable.ext.search.pop();
+
+			//
+			//	3.	Show table data without custom filters
+			//
+			table.draw();
+
+		});
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+
+}
+
+</script>

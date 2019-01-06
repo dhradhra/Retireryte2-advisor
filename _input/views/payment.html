@@ -1,0 +1,497 @@
+<div class="page">
+
+	<div class="page-inner">
+
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Investors</a>
+						<a href="settings.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Settings</a>
+					</li>
+				</ol>
+			</nav>
+
+			<div class="d-md-flex align-items-md-start">
+				<h1 class="page-title mr-sm-auto">Settings</h1>
+				<div id="dt-buttons" class="btn-toolbar"></div>
+			</div>
+
+		</header>
+
+		<div class="page-section">
+
+			<div class="row">
+
+				<div class="col-lg-4">
+
+					<div class="card card-fluid">
+						<h6 class="card-header">Your Details</h6>
+
+						<nav class="nav nav-tabs flex-column">
+							<a href="profile.html" class="nav-link">Profile</a>
+							<a href="payment.html" class="nav-link active">Payment</a>
+							<a href="payout.html" class="nav-link">Payout</a>
+							<a href="invoices.html" class="nav-link">Invoices</a>
+						</nav>
+
+					</div>
+
+				</div>
+
+				<div class="col-lg-8">
+
+					<div class="card card-fluid">
+
+						<h6 class="card-header">Payment On File</h6>
+
+						<div class="card-body">
+
+							<div class="form-row">
+								<label for="cardNumber" class="col-md-3 mb-3">Card Number</label>
+								<div class="col-md-9 mb-3">
+									 XXXX-XXXX-XXXX-<span id="last4"></span>
+								</div>
+							</div>
+
+							<div class="form-row">
+								<label for="exipiryDate" class="col-md-3 mb-3">Exipiry Date</label>
+								<div class="col-md-9 mb-3">
+									<span id="exp_month"></span> /
+									<span id="exp_year"></span>
+									<span id="brand">
+										<i id="brand_logo"></i>
+									</span>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+					<form id="payment-form">
+
+						<div class="card card-fluid">
+
+							<h6 class="card-header">Billing Information</h6>
+
+							<div class="card-body">
+
+								<div class="form-row">
+
+									<label for="country" class="col-md-3 mb-3">Country</label>
+
+									<div class="col-md-9 mb-3">
+										<select id="country" class="custom-select">
+											<option value="">Select your country</option>
+											<option value="USA" selected>United States</option>
+										</select>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="address" class="col-md-3 mb-3">Address</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="address" oninvalid="this.setCustomValidity('Please enter your address')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your address" required>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="city" class="col-md-3 mb-3">City</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="city" oninvalid="this.setCustomValidity('Please enter your city')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your city" required>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="state" class="col-md-3 mb-3">State</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="state" oninvalid="this.setCustomValidity('Please enter your state')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your state" required>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="zip" class="col-md-3 mb-3">Zip / Postal Code</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="zip" oninvalid="this.setCustomValidity('Please enter your zip/postal code')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your zip/postal code" required>
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						<div class="card card-fluid">
+
+							<h6 class="card-header">Payment Option</h6>
+
+							<div class="card-body">
+
+								<div class="form-row">
+
+									<div id="card-element"></div>
+
+									<div id="card-errors" role="alert"></div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						<div class="form-actions">
+							<button type="submit" id="save" class="btn btn-primary ml-auto">Submit Payment</button>
+						</div>
+
+					</form>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+
+//
+//	Get the value of the button so we can set it back once we saved
+//
+var btn_value = $('#save').text();
+
+console.log("Before Getting Card Details: ", cognit_user)
+
+//
+//	Query the DDB to get the card that we have on file so the user knows
+//	what did they added.
+//
+get_card_on_file(cognit_user);
+
+//
+//	Create the Stripe instance
+//
+var stripe = Stripe('pk_test_BsqaokdmVpqzIPqrZUrDbPoa');
+var elements = stripe.elements();
+
+//
+//	Custom styling can be passed to options when creating an Element.
+//
+var style = {
+	base: {
+		//
+		//	Add your base input styles here. For example:
+		//
+		fontSize: '16px',
+		color: "#32325d",
+	}
+};
+
+//
+//	Create an instance of the card Element.
+//
+var card = elements.create('card', {
+	style: style
+});
+
+//
+//	Add an instance of the card Element into the `card-element` <div>.
+//
+card.mount('#card-element');
+
+//
+//	Listen for changes in the card form so Stripe can notify the user
+//	if something that they typed is wrong.
+//
+card.addEventListener('change', function(event) {
+
+	var displayError = document.getElementById('card-errors');
+
+	if(event.error)
+	{
+		displayError.textContent = event.error.message;
+	}
+	else
+	{
+		displayError.textContent = '';
+	}
+
+});
+
+//
+//	Create a token or display an error when the form is submitted.
+//
+var form = document.getElementById('payment-form');
+
+//
+//	Listen for a form submit event
+//
+form.addEventListener('submit', function(event) {
+
+	//
+	//	1.	Start the spinner
+	//
+	$('.spinner_overlay').show();
+
+	//
+	//	2.	Disable the button to prevent people to keep clicking on ti while
+	//		we are saving
+	//
+	$('#save').addClass("disabled");
+
+	//
+	//	3.	Update the button to inform the user we are saving
+	//
+	$('#save').text("Saving...");
+
+	//
+	//	4.	Prevent the default behavior of the form
+	//
+	event.preventDefault();
+
+	//
+	//	5.	Create a token that represents the card
+	//
+	stripe.createToken(card).then(function(result) {
+
+		//
+		//	1.	Check to see if there was an error
+		//
+		if(result.error)
+		{
+			//
+			//	Inform the customer that there was an error.
+			//
+			var errorElement = document.getElementById('card-errors');
+
+			//
+			//	Save the error
+			//
+			errorElement.textContent = result.error.message;
+		}
+		else
+		{
+			//
+			//	Send the token to your server.
+			//
+			stripeTokenHandler(result.token, cognit_user);
+		}
+
+		//
+		//	2.	Stop the spinner
+		//
+		$('.spinner_overlay').hide();
+
+	});
+
+});
+
+//
+//	Save the card information
+//
+function stripeTokenHandler(token, cognit_user) {
+
+	//
+	//	1.	Get the fresh credentials
+	//
+	get_credentials(cognit_user, function(error, obj) {
+
+		//
+		//	1.	Check for internal errors
+		//
+		if(error)
+		{
+			console.error(error);
+		}
+
+		//
+		//	2.	Get all the data from the form
+		//
+		var values = scrape_form($("form :input"));
+
+		//
+		//	2.	DDB query
+		//
+		var params = {
+			TableName: 'Users',
+			Key: {
+				cognito_id: obj.cognito_id
+			},
+			ExpressionAttributeNames: {
+				"#stripe": "stripe"
+			},
+			ExpressionAttributeValues: {
+				":card": {
+					'token': token.id,
+					'id': token.card.id,
+					'exp_month': token.card.exp_month,
+					'exp_year': token.card.exp_year,
+					'last4': token.card.last4,
+					'brand': token.card.brand,
+					"billing": {
+						"country": values.country,
+						"address": values.address,
+						"city": values.city,
+						"state": values.state,
+						"zip": values.zip
+					}
+				}
+			},
+			UpdateExpression: 'set #stripe.card = :card',
+		};
+
+		//
+		//	->	Execute the command
+		//
+		obj.ddb.update(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an error
+			//
+			if(error)
+			{
+				console.error(error);
+			}
+
+			//
+			//	2.	Restore the original text of the button
+			//
+			$('#save').text(btn_value);
+
+			//
+			//	3.	Re-enable the button so the user can click again if
+			//		he or she chooses to.
+			//
+			$('#save').removeClass("disabled");
+
+			//
+			//	4.	Pull fresh data from the DB
+			//
+			get_card_on_file(cognit_user);
+
+		});
+
+	});
+}
+
+//
+//	Query the DDB to get the card that the user has on file
+//
+function get_card_on_file(cognit_user)
+{
+	//
+	//	1.	Get credentials
+	//
+	get_credentials(cognit_user, function(error, obj) {
+
+		//
+		//	1.	Check for internal errors
+		//
+		if(error)
+		{
+			return console.error(error);
+		}
+
+		//
+		//	2.	DDB query
+		//
+		var params = {
+			Key: {
+				cognito_id: obj.cognito_id
+			},
+			TableName: "Advisor",
+			ProjectionExpression: "stripe"
+		};
+
+		//
+		//	->	Execute the command
+		//
+		obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an error
+			//
+			if(error)
+			{
+				console.error(error);
+			}
+
+			//
+			//	2.	Populate the page only if we have a card on file
+			//
+			if(data.Item.stripe.card)
+			{
+				//
+				//	1.	Update the form with the data that we got
+				//
+				populate_html(data.Item.stripe.card)
+				populate_form(data.Item.stripe.card.billing)
+
+				//
+				//	2.	Set the logo of card brand
+				//
+				set_card_logo(data.Item.stripe.card.brand)
+			}
+
+		});
+
+	});
+}
+
+//
+//	To set the brand logo of card
+//
+function set_card_logo(brand) {
+	//
+	//	1.	Default card class added
+	//
+	var brand_class = "fa fa-credit-card"
+
+	//
+	//	2.	List of all the card types and their relevant classes
+	//
+	var cards_list = {
+		'visa': 'fab fa-cc-visa',
+		'mastercard': 'fab fa-cc-mastercard',
+		'amex': 'fab fa-cc-amex',
+		'discover': 'fab fa-cc-discover',
+		'diners': 'fab fa-cc-diners-club',
+		'jcb': 'fab fa-cc-jcb',
+		'unknown': 'fa fa-credit-card',
+	}
+
+	//
+	//	3.	Checking the brand of the saved card and get its relevant class
+	//
+	if (brand in cards_list)
+	{
+		brand_class = cards_list[brand];
+	}
+
+	//
+	//	4.	Adding proper class to the element to show the card logo
+	//
+	$('#brand_logo').addClass(brand_class);
+
+}
+
+</script>

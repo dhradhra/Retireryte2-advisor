@@ -1,0 +1,549 @@
+<div class="page">
+	<div class="page-inner">
+		<header class="page-title-bar">
+
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<b>Home</b></a>
+						<span>
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Invite Investor</span>
+					</li>
+				</ol>
+			</nav>
+
+			<p class="lead">
+				<span class="font-weight-bold">New investor</span>
+			</p>
+
+			<hr class="bold-hr">
+
+			<p>
+				<span class="grey-sub-head">Invite a new investor that you'd like to help.</span>
+			</p>
+
+		</header>
+
+		<section id="base-style" >
+			<form>
+				<fieldset class="card">
+					<div class="card-body">
+						<legend>Basic Information</legend>
+
+						<div class="form-group">
+							<label for="fName">First Name</label>
+
+							<input type="text" class="form-control" id="first_name" placeholder="e.g. John" required>
+						</div>
+
+						<div class="form-group">
+							<label for="email">Email</label>
+
+							<input type="email" class="form-control" id="email" placeholder="e.g. name@example.com" required>
+						</div>
+
+					</div>
+				</fieldset>
+				<div class="form-actions card btm-btn-padd d-block">
+					<button onclick="history.back()" class="btn btn-yellow">Back</button>
+
+					<button type="submit" id="btn_save" class="btn btn-success">Save</button>
+				</div>
+			</form>
+		</section>
+	</div>
+</div>
+
+<!--
+
+    The Modal
+
+-->
+<div class="modal fade" id="existing_investor_modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Investor Exists</h4>
+
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				You already invited this investor.
+			</div>
+
+			<div class="modal-footer">
+				<button id="btn_ok" type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+//
+//  <<> React when user presses enter on the form input fields
+//      trigger the submit form event
+//
+$('.form-control').keypress(function (e) {
+
+	//
+	//	1.	Check if we are dealing with the Enter event
+	//
+	if(e.which == 13)
+	{
+		//
+		//	1.	Problematically trigger a button click.
+		//
+		$('#btn_save').click();
+
+		//
+		//	2.	By returning false you prevent the default action in the
+		//		browser to happen.
+		//
+		return false;
+	}
+
+});
+
+//
+//	<<>	React when the user wants submit the form.
+//
+$('form').on("submit", function(event) {
+
+	//
+	//	1.	Start the spinner
+	//
+	$('.spinner_overlay').show();
+
+	//
+	//	2.	Prevent the default form action so we can process the action
+	//		our way.
+	//
+	event.preventDefault();
+	event.stopPropagation();
+
+	//
+	//	3.	Disable the button to prevent people to keep clicking on ti while
+	//		we are saving
+	//
+	$('#btn_save').addClass("disabled");
+
+	//
+	//	4.	Update the button to inform the user we are saving
+	//
+	$('#btn_save').text("Saving...");
+
+	//
+	//	5.	Get all the data from the form
+	//
+	var form_data = scrape_form($("form :input"));
+
+	//
+	//	6.	Get fresh credentials from Cognito
+	//
+	get_credentials(cognit_user, function(error, obj) {
+
+		//
+		//	1.	Check for internal errors
+		//
+		if(error)
+		{
+			console.error(error);
+		}
+
+		//
+		//	2.	Create a container that will be passed between promises so
+		//		we have one central place where all the data goes
+		//
+		var container = {
+			//
+			//	Holds all the Cognito related data and AWS authenticated
+			//	services.
+			//
+			obj: obj,
+			//
+			//	An object with all the form data easily accessible
+			//
+			form_data: form_data
+		};
+
+		//
+		//	->	Start the chain
+		//
+		ddb_get_advisor_details(container)
+			.then(function(container) {
+
+				return check_account_limit(container);
+
+			}).then(function(container) {
+
+				return check_investor_connection_with_advisor(container);
+
+			}).then(function(container) {
+
+				return ddb_check_if_tmp_exist(container);
+
+			}).then(function(container) {
+
+				return ddb_save_invite_investor(container);
+
+			}).then(function(container) {
+
+				return delay_redirect(container);
+
+			}).then(function(container) {
+
+				//
+				//	1.	Stop the spinner
+				//
+				$('.spinner_overlay').hide();
+
+				console.log("Done!");
+
+				history.back();
+
+			}).catch(function(error) {
+
+				console.error(error);
+
+			});
+
+	});
+
+});
+
+//
+//	Before we do anything we query the DDB to get extra information about the
+//	Advisor.
+//
+function ddb_get_advisor_details(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName : 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ProjectionExpression: "investors, stripe.card"
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check for internal errors
+			//
+			if(error)
+			{
+				return reject(new Error("get_advisor_details" + error.message));
+			}
+
+			//
+			//	2.	Save the result for subsequent promises
+			//
+			container.advisor = data.Item;
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	When an Advisor makes an account they can invite up to 5 Investors
+//	for free. This Promise checks to see if the Advisor reached the limit.
+//
+//		For consistency, there is another check in the back-end.
+//
+function check_account_limit(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	When the Advisor has a new account they won't have this
+		//		Object Key in the DDB. Check for it and skip this step
+		//		if necessary
+		//
+		if(!container.advisor.stripe)
+		{
+			//
+			//	1.	Check if the Advisor have some investors at all
+			//
+			if(container.advisor.investors)
+			{
+				//
+				//	1.	If there are some advisors, check how many are there.
+				//
+				if(container.advisor.investors.length >= 5)
+				{
+					//
+					//	->	If the limit is to big, we redirect the Advisor to
+					//		the page where we explain what to do next.
+					//
+					return window.location.replace('/limit');
+				}
+			}
+		}
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	After we know the free limit wasn't reached or the Advisor added a payment
+//	option, we check if the email submitted was not already attached to
+//	the Advisor. We don't want duplicates.
+//
+function check_investor_connection_with_advisor(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	When the Advisor has a new account they won't have this
+		//		Object Key in the DDB. Check for it and skip this step
+		//		if necessary
+		//
+		if(!container.advisor.investors)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	We save the size of the array for clarity
+		//
+		var count = container.advisor.investors.length;
+
+		//
+		//	3.	Loop over all the email to see what we find
+		//
+		for(var i = 0; count >= i; i++)
+		{
+			//
+			//	1.	Check if we have a matching email from the one submitted
+			//		and the one in DDB
+			//
+			if(container.advisor.investors[i] == container.form_data.email)
+			{
+				//
+				//  1.	Show modal view with a friendly message that
+				//		the investor was already invited.
+				//
+				$('#existing_investor_modal').modal('show');
+
+				//
+				//	<<> Make a Error message that will show up in the
+				//		console.
+				//
+				return reject(new Error("Investor already invited."));
+
+			}
+		}
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	Before we save the invite in to the DDB.
+//
+//	The DynamoDB SDK dose not support creating empty structure tree, this
+//	means that for example we can't create an empty array like this:
+//
+//		tmp.name = [];
+//
+//	When tmp dose not exist. We need to first ensure that tmp exists
+//	before we do anything with that tmp. Meaning the SDK dose not help
+//	us out at all, and we need to do everything by hand.
+//
+function ddb_check_if_tmp_exist(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		let params = {
+			TableName: 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ExpressionAttributeNames: {
+				'#tmp': 'tmp',
+			},
+			ExpressionAttributeValues: {
+				":empty": {}
+			},
+			UpdateExpression: 'SET #tmp = if_not_exists(#tmp, :empty)'
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.update(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	After we are sure that the full structure in the DDB for the data is
+//	in place, we can save the final invitation information.
+//
+function ddb_save_invite_investor(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Check if we have to skip this step
+		//
+		if(container.found)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	DDB query
+		//
+		var params = {
+			TableName: 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ExpressionAttributeNames: {
+				"#tmp": "tmp",
+				"#investor": "investor"
+			},
+			ExpressionAttributeValues: {
+				":investor": [{
+					investor_first_name: container.form_data.first_name,
+					investor_email: container.form_data.email,
+					owner_id: container.obj.cognito_id,
+				}],
+				':empty_list': []
+			},
+			UpdateExpression: 'set #tmp.#investor = list_append(if_not_exists(#tmp.#investor, :empty_list), :investor)',
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.update(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(new Error("invite_investor: " + error.message));
+			}
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	Now that we have everything saved in the DDB, we need to add a small
+//	delay since we need to wait for the DDB stream to trigger a Lambda
+//	function that will process everything that needs to be processed.
+//
+function delay_redirect(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	Set the timer which will execute after X amount of time.
+		//
+		setTimeout(function() {
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		}, 1500);
+
+	})
+}
+
+//	  ____    _   _
+//	 / __ \  | \ | |
+//	| |  | | |  \| |
+//	| |  | | | . ` |
+//	| |__| | | |\  |
+//	 \____/  |_| \_|
+//
+
+//
+//  React to click on the Modal view
+//
+$('#btn_ok').on('click', function() {
+
+	//
+	//	1.	Restore original text
+	//
+	$('#btn_save').text("Save");
+
+	//
+	//	2.	Re-Enable the button
+	//
+	$('#btn_save').removeClass("disabled");
+
+	//
+	//	3.	Clear email field on click of OK button
+	//
+    $('#email').val('');
+
+	//
+	//	4.	focus on it to enter new one.
+	//
+    $('#email').focus();
+    
+});
+
+</script>

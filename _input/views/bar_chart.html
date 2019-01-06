@@ -1,0 +1,129 @@
+<div class='col-7 col-lg-7 col-xl-7'>
+    <div id="barchartsDiv" class="containerDiv">
+        <svg class="barcharts" width="700" height="300"></svg>
+    </div>
+</div>
+
+<script src="./assets/js/d3.v4.min.js"></script>
+<script src="./assets/js/BarChart.js"></script>
+
+<script>
+    //
+    //  Put id of div in a variable to show the chart.
+    //    
+    var mainDiv = "#barchartsDiv";
+
+    //
+    //  Put arrow color in a variable to color the arrow in chart.
+    //    
+    var arrowColor = "red";
+
+    //
+    //  Put label color in a variable to color the label in chart.
+    //    
+    var labelFontColor = "gray";
+
+    //
+    //  Indicators with arrow and labels to show on top of chart.
+    //
+    var legendData = [{
+        text: "Indicates you needed more;",
+        arrow: `&larr;`
+    }, {
+        text: " Indicates you needed less;",
+        arrow: `&rarr;`
+    }, {
+        text: "No arrow means no change was needed",
+        arrow: `&nbsp;`
+    }];
+
+    //
+    //  Dummy Data to display on barchart.
+    //
+    var currentVsRecommendedData = {
+        fixedRate: {
+            investType: 'fixedRate',
+            current: 500,
+            recommended: 260,
+            color: "#00a28a",
+            order: 3
+        },
+        principalProtected: {
+            investType: 'principalProtected',
+            current: 290,
+            recommended: 350,
+            color: "#346cb0",
+            order: 2
+        },
+        principalRisk: {
+            investType: 'principalRisk',
+            current: 1000,
+            recommended: 250,
+            color: "#b76ba3",
+            order: 1
+        }
+    };
+
+    //
+    //  Configuration of barchart.
+    // 
+    var chartConfig = {
+        containerDiv: "barchartsDiv",
+        svgClass: "barcharts",
+        data: currentVsRecommendedData,
+        arrowColor: "red",
+        margin: {
+            top: 20,
+            right: 30,
+            bottom: 80,
+            left: 130
+        },
+        fontStyle: {
+            xAxis: {
+                fontSize: "12px",
+                fontColor: "gray"
+            },
+            yAxis: {
+                fontSize: "13px",
+                fontWeight: "bold",
+                fontColor: "gray"
+            },
+            barText: {
+                fontSize: "12px",
+                fontWeight: "bold",
+                fontColor: "gray"
+            }
+        },
+        arrowStyle: {
+            color: "red",
+            strokeWidth: 6
+        }
+    }
+
+
+
+    //
+    //	->	Start the chain
+    //
+    //
+    //  1.  CBT:Call Legend to create legend of the chart. Arguments
+    //      contains mainDiv, legend Data, arrow color, labelColor.
+    //
+    createChartLegend(mainDiv, legendData, arrowColor, labelFontColor)
+        .then(function () {
+            //
+            //  2.  CBT:this is to create barchart.
+            //  
+            return drawStackChart(chartConfig);
+
+        }).then(function () {
+
+            console.log('Chart completed');
+
+        }).catch(function (error) {
+
+            console.error(error);
+
+        })
+
+</script>

@@ -1,0 +1,945 @@
+<div class="page">
+	<div class="page-inner">
+
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<b>Home</b></a>
+						<a href="plans.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i><b>Plans</b></a>
+						<span>
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i> Plan Details</span>
+					</li>
+				</ol>
+			</nav>
+			<p class="lead">
+				<span class="font-weight-bold">Plan Details</span>
+				<hr class="bold-hr">
+			</p>
+		</header>
+
+		<div class="page-section">
+			<div class="section-block">
+				<div class="row">
+					<!--
+
+						investor details
+
+					-->
+					<div class="col-lg-12 col-md-12 photo-text">
+						<h2>
+
+							<span class="text-right-side">
+
+								<h2 class="h4 mt-3 mb-0">
+									<span class="sub-head">Plan Name</span>
+								</h2>
+
+							</span>
+
+						</h2>
+					</div>
+				</div>
+			</div>
+
+			<section class="card card-fluid">
+
+				<header class="card-header text-center d-flex">
+					<a id="btn_invite_advisor" href="invite_advisor.html" class="btn notes-btn new-button align-self-center mx-auto">Invite Advisor</a>
+					<a id="btn_edit" href="plan_raw.html?action=edit" class="btn notes-btn new-button align-self-center mx-auto">Edit</a>
+					<a id="btn_delete" class="btn notes-btn new-button align-self-center mx-auto">Delete</a>
+					<a id="btn_release" class="btn notes-btn new-button align-self-center mx-auto">Release</a>
+				</header>
+
+				<header class="card-header">
+					<ul class="nav nav-tabs card-header-tabs">
+
+						<li class="nav-item">
+							<a class="nav-link active show" data-toggle="tab" href="#data">Data</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link  show" data-toggle="tab" href="#output">Output</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link  show" data-toggle="tab" href="#graphs">Graphs</a>
+						</li>
+
+					</ul>
+				</header>
+
+				<div class="tab-content">
+					<!--
+
+						Data
+
+					-->
+					<div id="data" class="container tab-pane active">
+						<div class="card-body">
+							<span id="details">
+
+								<div id="form_data">
+
+									<p>Name: <strong><span id="plan_name">N/A</span></strong></p>
+									<p>Description: <span id="description">N/A</span></p>
+									<p>Wage: <span id="wage">N/A</span></p>
+									<p>Threshold: <span id="threshold">N/A</span></p>
+									<p>After the Plan Ends: <span id="after_the_plan_ends">N/A</span></p>
+									<p>Towards month: <span id="towards_month">N/A</span></p>
+									<p>Live of month: <span id="live_of_month">N/A</span></p>
+									<p>Probability Success: <span id="probability_success_percentage">N/A</span></p>
+									<p>Importance: <span id="importance">N/A</span></p>
+
+									<hr>
+
+									<div id="spread">
+										<p>Fix Rate: <span id="fix_rate">N/A</span></p>
+										<p>Principal Protected: <span id="principal_protected">N/A</span></p>
+										<p>Principal at Risk: <span id="principal_at_risk">N/A</span></p>
+									</div>
+
+									<div id="investors">
+										<p>Investors</p>
+										<ul class="row">
+											<li class="col-md-3 col-sm-4">
+												<p>Type: <span class="type">N/A</span></p>
+												<p>Age: <span class="age">N/A</span></p>
+												<p>Wage: <span class="wage">N/A</span></p>
+												<p>Cash: <span class="cash">N/A</span></p>
+												<p>Retirement Age: <span class="retirement_age">N/A</span></p>
+												<p>Towards Month: <span class="towards_month">N/A</span></p>
+												<p>Live Of Month: <span class="live_of_month">N/A</span></p>
+												<p>Life Expectancy: <span class="life_expectancy">N/A</span></p>
+											</li>
+										</ul>
+									</div>
+
+									<div id="other_income">
+										<p>Other Income</p>
+										<ul class="row">
+											<li class="col-md-3 col-sm-4">
+												<p>Name: <strong><span class="name">N/A</span></strong></p>
+												<p>Amount: $<span class="ammount">N/A</span></p>
+											</li>
+										</ul>
+									</div>
+
+									<div id="inflows">
+										<p>Inflow</p>
+										<ul class="row">
+											<li class="col-md-3 col-sm-4">
+												<p>Name: <strong><span class="name">N/A</span></strong></p>
+												<p>Date: <span class="date">N/A</span></p>
+												<p>Amount: <span class="ammount">N/A</span></p>
+												<p>Is Sure: <span class="is_sure">N/A</span></p>
+											</li>
+										</ul>
+									</div>
+
+									<div id="expenses">
+										<p>Expenses</p>
+										<ul class="row">
+											<li class="col-md-3 col-sm-4">
+												<p>Name: <strong><span class="name">N/A</span></strong></p>
+												<p>Payment: <span class="payment">N/A</span></p>
+											</li>
+										</ul>
+									</div>
+
+									<div id="investments">
+										<p>Investments</p>
+										<ul class="row">
+											<li class="col-md-3 col-sm-4">
+												<p>Name: <strong><span class="name">N/A</span></strong></p>
+												<p>Payment: <span class="payment">N/A</span></p>
+											</li>
+										</ul>
+									</div>
+
+									<div id="dreams">
+										<p>Dreams</p>
+										<ul class="row">
+											<li class="col-md-3 col-sm-4">
+												<p>Name: <strong><span class="name">N/A</span></strong></p>
+												<p>Date: <span class="date">N/A</span></p>
+												<p>Price: <span class="price">N/A</span></p>
+											</li>
+										</ul>
+									</div>
+								</div>
+
+							</span>
+						</div>
+					</div>
+
+					<!--
+
+						Result
+
+					-->
+					<div id="output" class="container tab-pane fade">
+
+						<div id="calculation_result">
+							<ul class="row">
+								<li class="col-md-3 col-sm-4">
+									<p>Name: <span class="name">N/A</span></p>
+									<p>Current: <span class="current">N/A</span></p>
+									<p>Order: <span class="order">N/A</span></p>
+									<p>Recommended: <span class="recommended">N/A</span></p>
+								</li>
+							</ul>
+						</div>
+
+					</div>
+
+					<!--
+
+						Graphs
+
+					-->
+					<div id="graphs" class="container tab-pane fade">
+						<div class="card-body bottom-padding-none">
+							<div class='col-12 col-lg-12 col-xl-12'>
+								<div class="chart-custom">
+									<div class="chart-custom-inner">
+										<div id="barchartsDivMonths" class="containerDiv">
+											<svg class="barchartsMonths" width="700" height="370"></svg>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class='col-12 col-lg-12 col-xl-12'>
+								<div class="chart-custom">
+									<div class="chart-custom-inner">
+										<div id="barchartsDivInvestment" class="containerDiv">
+											<svg class="barchartsInvestment" width="700" height="370"></svg>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<!--
+    The Modal to confirm delete
+-->
+<div class="modal fade" id="confirm_delete">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Delete Permanently</h4>
+
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				Are you sure about this ?
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+				<button type="button" class="btn btn-danger" id="confirmed_delete">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--
+    The Modal to confirm release
+-->
+<div class="modal fade" id="confirm_release">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Release Permanently</h4>
+
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				Are you sure about this ?
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+				<button type="button" class="btn btn-danger" id="confirmed_release">Release</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="./assets/js/d3.v4.min.js"></script>
+<script src="./assets/js/BarChart.js"></script>
+
+<script>
+
+//
+//	Show the spinner.
+//
+$('.spinner_overlay').show();
+
+//
+//	Get all the query string values from url
+//
+var queries = parse_the_url();
+
+//
+//	Get fresh credentials from Cognito
+//
+get_credentials(cognit_user, function(error, obj) {
+
+	//
+	//	1.	Check for internal errors
+	//
+	if(error)
+	{
+		console.error(error);
+	}
+
+	//
+	//	2.	Create a container that will be passed between promises so
+	//		we have one central place where all the data goes
+	//
+	var container = {
+		//
+		//	Holds all the Cognito related data and AWS authenticated
+		//	services.
+		//
+		obj: obj,
+		//
+		//	Pass the URL from the browser to extract all the queries
+		//
+		url: window.location.href,
+		//
+		//	Place holder for all the URL Queries
+		//
+		queries: queries
+	};
+
+	//
+	//	->	Start the chain
+	//
+	update_crumbs(container)
+		.then(function(container) {
+
+			return update_btn_invite_advisro(container);
+
+		}).then(function(container) {
+
+			return update_btn_edit(container);
+
+		}).then(function(container) {
+
+			return update_btn_delete(container);
+
+		}).then(function(container) {
+
+			return update_btn_release(container);
+
+		}).then(function(container) {
+
+			return get_plan_details(container);
+
+		}).then(function(container) {
+
+			return check_btn_release(container);
+
+		}).then(function(container) {
+
+			//
+			//	1.	Populate the HTML with all the data that we got
+			//		from the DDB.
+			//
+			populate_html(container.plan_details);
+
+			//
+			//	Stop the spinner.
+			//
+			$('.spinner_overlay').hide();
+
+		}).catch(function(error) {
+
+			console.error(error);
+
+		});
+
+});
+
+//	 _____    _____     ____    __  __   _____    _____   ______    _____
+//	|  __ \  |  __ \   / __ \  |  \/  | |_   _|  / ____| |  ____|  / ____|
+//	| |__) | | |__) | | |  | | | \  / |   | |   | (___   | |__    | (___
+//	|  ___/  |  _  /  | |  | | | |\/| |   | |    \___ \  |  __|    \___ \
+//	| |      | | \ \  | |__| | | |  | |  _| |_   ____) | | |____   ____) |
+//	|_|      |_|  \_\  \____/  |_|  |_| |_____| |_____/  |______| |_____/
+//
+
+//
+//	Update the BreadCrumbs to update the querystring with URL
+//
+
+function update_crumbs(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	make the query URL
+		//
+		var query = $("a[href='plans.html']").attr('href')
+				  + "?investor_id="
+				  + container.queries.investor_id;
+
+		//
+		//	2.	Append the query to the anchor.
+		//
+		$("a[href='plans.html']").attr('href', query)
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	Once we can access the query data in a was way, we use the id from the
+//	URL to update the Invite Advisor button so when it is clicked it has the id
+//	of the plan.
+//
+function update_btn_invite_advisro(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	make the query URL
+		//
+		var query = $('#btn_invite_advisor').attr('href')
+				  + "?plan_id="
+				  + container.queries.plan_id
+				  + "&investor_id="
+				  + container.queries.investor_id
+
+		//
+		//	2.	Append the query to the button.
+		//
+		$('#btn_invite_advisor').attr("href", query);
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	Same goes with the Edit button
+//
+function update_btn_edit(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	make the query URL
+		//
+		var query = $('#btn_edit').attr('href')
+				  + "&plan_id="
+				  + container.queries.plan_id
+				  +	"&investor_id="
+				  +	container.queries.investor_id
+
+		//
+		//	2.	Append the query to the button.
+		//
+		$('#btn_edit').attr("href", query);
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	And the Delete one
+//
+function update_btn_delete(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Enrich the HTML element with extra data
+		//
+		$("#btn_delete").data("plan_id", container.queries.plan_id);
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	And finally the Release button
+//
+function update_btn_release(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Enrich the HTML element with extra data, so other parts
+		//		of the code can perform actions with this data.
+		//
+		$("#btn_release").data("plan_id", container.queries.plan_id);
+		$("#btn_release").data("investor_id", container.queries.investor_id);
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	Update release button based on plan status
+//
+function check_btn_release(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	If the plan is released, update the button text
+		//		and disable it.
+		//
+		if(container.plan_details.owners.investor_id)
+		{
+			let btn_release = $("#btn_release");
+
+			btn_release.html("Released");
+			btn_release.prop("disabled", true);
+		}
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	Once we have the ID of the plan we can query for additional data
+//
+function get_plan_details(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName : 'Plan',
+			Key: {
+				id: container.queries.plan_id
+			}
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Save the response for the next Promise
+			//
+			container.plan_details = data.Item;
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//	 ______  _    _  _   _   _____  _______  _____  ____   _   _   _____
+//	|  ____|| |  | || \ | | / ____||__   __||_   _|/ __ \ | \ | | / ____|
+//	| |__   | |  | ||  \| || |        | |     | | | |  | ||  \| || (___
+//	|  __|  | |  | || . ` || |        | |     | | | |  | || . ` | \___ \
+//	| |     | |__| || |\  || |____    | |    _| |_| |__| || |\  | ____) |
+//	|_|      \____/ |_| \_| \_____|   |_|   |_____|\____/ |_| \_||_____/
+//
+
+//
+//	React to a Delete confirmed event
+//
+$('#confirmed_delete').on("click", function() {
+
+	//
+	//	Hide the confirmation modal of delete.
+	//
+	$('#confirm_delete').modal('hide');
+
+	//
+	//	Disable the button to prevent people to keep clicking on it while we
+	//	are deleting
+	//
+	$('#btn_delete').addClass("disabled");
+
+	//
+	//	Update the button to inform the user we are deleting
+	//
+	$('#btn_delete').text("Working...");
+
+	//
+	//	1.	Get fresh credentials from Cognito
+	//
+	get_credentials(cognit_user, (error, obj) => {
+
+		//
+		//	1.	Prepare the query
+		//
+		var params = {
+			TableName: 'Plan',
+			Key: {
+				id: $(this).data("plan_id")
+			}
+		};
+
+		//
+		//	->	Execute the query
+		//
+		obj.ddb.delete(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				//
+				//  1.	Rename the button with Delete
+				//
+				$('#btn_delete').text("Delete");
+
+				//
+				//	->	Stop the chain and surface the error.
+				//
+				return console.error(error);
+			}
+
+			//
+			//  2.	Go to the previous page if plan is deleted successfully
+			//
+			history.back();
+
+		});
+
+	});
+
+});
+
+//
+//	React to a Release confirmed event
+//
+$('#confirmed_release').on("click", function() {
+
+	//
+	//	Hide the confirmation modal of release.
+	//
+	$('#confirm_release').modal('hide');
+
+	//
+	//	1.	Disable the button to prevent people to keep clicking on it while we
+	//		are releasing
+	//
+	$(btn_release).addClass("disabled");
+
+	//
+	//	2.	Update the button to inform the user we are releasing
+	//
+	$(btn_release).text("Working...");
+
+	//
+	//	3.	Get the ID needed for the query before we enter the next function
+	//		callback.
+	//
+	let plan_id = $(btn_release).data("plan_id");
+	let investor_id = $(btn_release).data("investor_id");
+
+	//
+	//	4.	Get fresh credentials from Cognito
+	//
+	get_credentials(cognit_user, function(error, obj) {
+
+		//
+		//	1.	DDB query
+		//
+		let params = {
+			TableName: 'Plan',
+			Key: {
+				id: plan_id
+			},
+			ExpressionAttributeNames: {
+				'#owners': 'owners',
+			},
+			ExpressionAttributeValues: {
+				":investor_id": investor_id
+			},
+			UpdateExpression: 'SET #owners.investor_id = :investor_id'
+		};
+
+		//
+		//	->	Execute the command
+		//
+		obj.ddb.update(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				//
+				//  1.	Rename the button with Release
+				//
+				$('#btn_release').text("Error");
+
+				//
+				//	->	Stop the chain and surface the error.
+				//
+				return console.error(error);
+			}
+
+			//
+			//  2.	Rename the button with Released on success
+			//
+			$('#btn_release').text("Released")
+
+		});
+
+	});
+
+});
+
+//
+//	React to a delete event
+//
+$('#btn_delete').on("click", function () {
+
+	//
+	//  1.	Show modal view with a friendly message that are you sure to
+	//		delete.
+	//
+	$('#confirm_delete').modal('show');
+
+})
+
+//
+//	React to a Release event
+//
+$('#btn_release').on("click", function () {
+
+	//
+	//  1.	Show modal view with a friendly message that are you sure to
+	//		release.
+	//
+	$('#confirm_release').modal('show');
+
+})
+
+</script>
+
+<script>
+
+	var mainDiv = "#barchartsDivInvestment";
+	var legendData = [{
+		text: "Indicates you needed more;",
+		arrow: `&uarr;`
+	}, {
+		text: " Indicates you needed less;",
+		arrow: `&darr;`
+	}, {
+		text: "No arrow means no change was needed",
+		arrow: `&nbsp;`
+	}];
+	//CBT: Investment in $ for current vs recommened
+	var currentVsRecommendedData = {
+		fixedRate: {
+			investType: 'fixedRate',
+			labelText: 'Fixed Rate',
+			current: 390,
+			recommended: 260,
+			color: "#00a28a",
+			order: 3
+		},
+		principalProtected: {
+			investType: 'principalProtected',
+			labelText: 'Principal Protected',
+			current: 290,
+			recommended: 350,
+			color: "#346cb0",
+			order: 2
+		},
+		principalRisk: {
+			investType: 'principalRisk',
+			labelText: 'Principal Risk',
+			current: 250,
+			recommended: 250,
+			color: "#b76ba3",
+			order: 1
+		}
+	};
+	//CBT:Call Legend to create legend of the chart
+	//CBT:arguments contains mainDiv,legend Data,arrow color,labelColor,arrowFontSize
+	createChartLegend(mainDiv, legendData, "red", "gray", 30);
+	var chartConfig = {
+		containerDiv: "barchartsDivInvestment",
+		svgClass: "barchartsInvestment",
+		data: currentVsRecommendedData,
+		arrowColor: "red",
+		margin: {
+			top: 30,
+			right: 30,
+			bottom: 30,
+			left: 70
+		},
+		fontStyle: {
+			xAxis: {
+				fontSize: "12px",
+				fontColor: "gray",
+				fontWeight: "bold",
+			},
+			yAxis: {
+				fontSize: "13px",
+				fontColor: "gray",
+				labelPrefix: '$'
+			},
+			yAxisLabel: {
+				fontSize: "15px",
+				fontColor: "gray",
+				fontWeight: "bold",
+			},
+			barText: {
+				fontSize: "12px",
+				fontWeight: "bold",
+				fontColor: "gray",
+				labelPrefix: '$ '
+			}
+		},
+		arrowStyle: {
+			color: "red",
+			strokeWidth: 6
+		},
+		label: {
+			yAxis: '$s in Each Investment Type'
+		}
+	}
+	//CBT:this is for crate barchart
+	drawStackChartInvestment(chartConfig);
+</script>
+
+
+
+<script>
+
+	var mainDiv = "#barchartsDivMonths";
+	var legendData = [{
+		text: "Indicates you needed more;",
+		arrow: `&rarr;`
+	}, {
+		text: " Indicates you needed less;",
+		arrow: `&larr;`
+	}, {
+		text: "No arrow means no change was needed",
+		arrow: `&nbsp;`
+	}];
+	//CBT: here value of current vs recommened is in months
+	var currentVsRecommendedData = {
+		fixedRate: {
+			investType: 'fixedRate',
+			current: 39,
+			recommended: 26,
+			color: "#00a28a",
+			order: 3
+		},
+		principalProtected: {
+			investType: 'principalProtected',
+			current: 29,
+			recommended: 35,
+			color: "#346cb0",
+			order: 2
+		},
+		principalRisk: {
+			investType: 'principalRisk',
+			current: 25,
+			recommended: 25,
+			color: "#b76ba3",
+			order: 1
+		}
+	};
+	//CBT:Call Legend to create legend of the chart
+	//CBT:arguments contains mainDiv,legend Data,arrow color,labelColor,arrowFontSize
+	createChartLegend(mainDiv, legendData, "red", "gray", 30);
+	var chartConfig = {
+		containerDiv: "barchartsDivMonths",
+		svgClass: "barchartsMonths",
+		data: currentVsRecommendedData,
+		arrowColor: "red",
+		margin: {
+			top: 30,
+			right: 30,
+			bottom: 50,
+			left: 130
+		},
+		fontStyle: {
+			xAxis: {
+				fontSize: "12px",
+				fontColor: "gray"
+			},
+			yAxis: {
+				fontSize: "13px",
+				fontWeight: "bold",
+				fontColor: "gray"
+			},
+			barText: {
+				fontSize: "12px",
+				fontWeight: "bold",
+				fontColor: "gray",
+				labelPrefix: ''
+			}
+		},
+		arrowStyle: {
+			color: "red",
+			strokeWidth: 6
+		},
+		label: {
+			xAxis: 'Months of Income Covered by Investment Type'
+		}
+	}
+	//CBT:this is for crate barchart
+	drawStackChartMonths(chartConfig);
+</script>

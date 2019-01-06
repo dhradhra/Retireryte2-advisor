@@ -1,0 +1,741 @@
+<style>
+.notes-btn {
+	margin: 2px;
+	width: 60%;
+}
+
+.notes-btn-div {
+	margin-top: 27px;
+	margin-bottom: 0;
+	text-align: center;
+}
+
+.photo-text h2 a {
+	float: left;
+}
+
+.text-right-side {
+	margin-left: 18px;
+	display: inline-block;
+	margin-top: 14px;
+}
+
+.text-right-side h2 {
+	font-size: 20px;
+}
+
+.text-right-side p {
+	font-size: 13px;
+	padding: 5px 0;
+	line-height: 17px;
+	font-weight: 400;
+}
+
+.photo-text {
+	padding-bottom: 7px;
+}
+
+.notes-btn {
+	width: auto;
+}
+
+.notes-btn {
+    padding: 5px 16px;
+    line-height: 25px;
+    font-size: 0.875rem;
+    padding: .375rem .75rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 767px) {
+	.notes-btn br {
+		display: none;
+	}
+}
+</style>
+
+<div class="page">
+	<div class="page-inner">
+
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<b>Home</b></a>
+						<span>
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Plans</span>
+					</li>
+				</ol>
+			</nav>
+			<p class="lead">
+				<span class="font-weight-bold">Investor Details</span>
+			</p>
+			<hr class="bold-hr">
+		</header>
+
+		<div class="page-section">
+			<div class="section-block">
+				<div class="row">
+					<!--
+
+						investor details
+
+					-->
+					<div class="col-lg-12 col-md-12 photo-text">
+						<h2>
+							<a href="user-profile.html" class="user-avatar user-avatar-xxl">
+								<img id="avatar" alt="User Avatar" src="assets/img/unknown-profile.jpg">
+							</a>
+							<span class="text-right-side">
+								<h2 class="h4 mt-3 mb-0"><span id="first_name" ></span> <span id="last_name" ></span></h2>
+								<p class="text-muted"><span id="email"></span></p>
+							</span>
+						</h2>
+					</div>
+					</div>
+				</div>
+
+				<section class="card card-fluid">
+				<header class="card-header">
+					<ul class="nav nav-tabs card-header-tabs">
+
+						<li class="nav-item">
+							<a class="nav-link active show" data-toggle="tab" href="#tab1">All</a>
+						</li>
+
+						<a id="btn_new_plan" href="plan_raw.html" class="btn btn-success notes-btn new-button ml-auto align-self-center">New Plan
+							<span class="plus"> +</span>
+						</a>
+
+					</ul>
+				</header>
+
+				<div class="card-body">
+
+					<table id="myTable" class="display table table-bordered table-striped table-brdr-clr">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Owner</th>
+								<th>Rights</th>
+								<th>Released</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="odd">
+								<td valign="top" colspan="4" class="dataTables_empty">
+									<div class="table-spinner">
+										<div class="spinner">Loading...</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<!--
+
+	The Modal
+
+-->
+<div class="modal fade" id="confirm_delete_modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Delete Parmanently</h4>
+
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				Are you sure about this ?
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+				<button type="button" class="btn btn-danger" id="confirm">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+//
+//	Get all the query string values from url
+//
+var queries = parse_the_url();
+
+//
+//	Get fresh credentials from Cognito
+//
+get_credentials(cognit_user, function(error, obj) {
+
+	//
+	//	1.	Check for internal errors
+	//
+	if(error)
+	{
+		console.error(error);
+	}
+
+	//
+	//	2.	Create a container that will be passed between promises so
+	//		we have one central place where all the data goes
+	//
+	var container = {
+		//
+		//	This object contains all the authenticated data from Cognito
+		//
+		obj: obj,
+		//
+		//	The URL form the Browser
+		//
+		url: window.location.href,
+		//
+		//	Here we keep a list of all the Plan IDs
+		//
+		plan_ids: [],
+		//
+		//	This object will contain all the query data from the URL for
+		//	easy access.
+		//
+		queries: queries,
+		//
+		//	This array holds all the plans that needs to be render by the
+		//	table.
+		//
+		pans: []
+	};
+
+	//
+	//	->	Start the chain
+	//
+	update_btn_new_plan(container)
+		.then(function(container) {
+
+			return get_investor_details(container);
+
+		}).then(function(container) {
+
+			return get_avatar(container);
+
+		}).then(function(container) {
+
+			return render_investor_details(container);
+
+		}).then(function(container) {
+
+			return replace_bad_ddb_chars(container);
+
+		}).then(function(container) {
+
+			return get_plan_ids(container);
+
+		}).then(function(container) {
+
+			return get_plans(container);
+
+		}).then(function(container) {
+
+			return render_the_table(container);
+
+		}).then(function(container) {
+
+			console.log('Investor Details are Ready.');
+
+		}).catch(function(error) {
+
+			console.log(error);
+
+		});
+
+});
+
+//	 _____    _____     ____    __  __   _____    _____   ______    _____
+//	|  __ \  |  __ \   / __ \  |  \/  | |_   _|  / ____| |  ____|  / ____|
+//	| |__) | | |__) | | |  | | | \  / |   | |   | (___   | |__    | (___
+//	|  ___/  |  _  /  | |  | | | |\/| |   | |    \___ \  |  __|    \___ \
+//	| |      | | \ \  | |__| | | |  | |  _| |_   ____) | | |____   ____) |
+//	|_|      |_|  \_\  \____/  |_|  |_| |_____| |_____/  |______| |_____/
+
+//
+//	Once we can access the query data in a was way, we use the email from the
+//	URL to update the Add Plan button so when it is clicked it has the email
+//	of the investor that we need to create the new plan for.
+//
+function update_btn_new_plan(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	make the query URL
+		//
+		var query = $('#btn_new_plan').attr('href')
+				  + "?investor_id="
+				  + container.queries.investor_id;
+
+		//
+		//	2.	Append the query to the button.
+		//
+		$('#btn_new_plan').attr("href", query);
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	Since we know from the URL who is the investor, we also query the DB
+//	to get the contact information so the Advisor knows who he clicked.
+//
+function get_investor_details(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName : 'Users',
+			Key: {
+				cognito_id: container.queries.investor_id
+			},
+			ProjectionExpression: "contact"
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Save the response for the next Promise
+			//
+			container.contact = data.Item.contact;
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	While at it we get the Photo if any of the investor to help the Advisor
+//	remember who is he dealing with.
+//
+function get_avatar(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Skip this step if the user did not add the avatar to their
+		//		profile
+		//
+		if(!container.contact.avatar)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	Set the option for the S3 request
+		//
+		var options = {
+			Bucket: 'drive.retireryte.net',
+			Key: 'avatars/' + container.contact.avatar
+		};
+
+		//
+		//	->	Execute the request
+		//
+		container.obj.s3.getObject(options, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Convert the Buffer that S3 gets to Base64 so we can
+			//		display the image in the browser
+			//
+			container.avatar_b64 = encode(data.Body);
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	After we have all the necessary data we display it on the screen page.
+//
+function render_investor_details(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	update the dashboard with live data
+		//
+		$('#first_name').text(container.contact.first_name)
+		$('#last_name').text(container.contact.last_name)
+		$('#email').append("<a href='mailto:"+ container.contact.email +"'>"+ container.contact.email+"</a>");
+
+		//
+		//	2.	Check if the Investor has set an Avatar.
+		//
+		if(container.avatar_b64)
+		{
+			$('#avatar').attr("src", "data:image/png;base64," + container.avatar_b64);
+		}
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+}
+
+//
+//	DynamoDB can accept a specific set of characters, anything else can't be
+//	used as a part of the structure:
+//
+//		[^a-zA-Z]
+//
+function replace_bad_ddb_chars(container)
+{
+    return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Replace unaceptable characters with an underscore
+		//
+    	container.clean_investor_id = container
+    									.queries
+    									.investor_id
+    									.replace(/[^a-zA-Z0-9]/g, "_");
+
+    	//
+		//	->	Move to the next Promise
+		//
+		return resolve(container);
+
+    });
+}
+
+//
+//	Once we have our sanitized investor email, we can query the Advisor
+//	table to get a list of all the plans a investor has.
+//
+function get_plan_ids(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName : 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ProjectionExpression: "plans.owned." + container.clean_investor_id
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Make sure there are plans before we do anything.
+			//
+			if(data.Item.plans)
+			{
+				//
+				//	1.	The DDB .batchGet() function expects the array to be
+				//		of a certain format, and so we need to take our simple
+				//		array and wrap each data set in to a JS object.
+				//
+				data.Item.plans.owned[container.clean_investor_id].forEach(function(data) {
+
+					//
+					//	1.	Save the data in the new way that DDB can accept.
+					//
+					container.plan_ids.push({
+						id: data
+					});
+
+				});
+			}
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	Make a query to the Plan table so we can get additional detail for each
+//	plan, for easy identification.
+//
+function get_plans(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Check if there is data to be queried, if not skip this promise.
+		//
+		if(container.plan_ids.length == 0)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	DDB query
+		//
+		var params = {
+			RequestItems: {
+				'Plan': {
+					Keys: container.plan_ids
+				}
+			}
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.batchGet(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Save the response for the next Promise
+			//
+			container.pans = data.Responses.Plan
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	In the end we render the table with all the detail that we got from the
+//	Plan table.
+//
+function render_the_table(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		$('#myTable').DataTable({
+			dom: `<'text-muted'Bi>
+			<'table-responsive'tr>
+			<p>`,
+			buttons: [
+				'copyHtml5',
+				{ extend: 'print', autoPrint: false }
+			],
+			language: {
+				paginate: {
+					previous: 'Prev',
+					next: 'Next'
+				},
+				sLoadingRecords : '<div class="table-spinner"><div class="spinner">Loading...</div></div>',
+				sProcessing: '<div class="table-spinner"><div class="spinner">Loading...</div></div>'
+			},
+			bInfo: false,
+			autoWidth: false,
+			data: container.pans,
+			deferRender: true,
+			order: [0, 'asc'],
+			columns: [
+				{ data: 'id' },
+				{ data: 'id' },
+				{ data: 'id' },
+				{ data: 'id' }
+			],
+			columnDefs: [
+				{
+					targets: 0,
+					render: function (data, type, row, meta) {
+						return `<span><a href="plan.html?plan_id=${row.id}&investor_id=${container.queries.investor_id}">${row.form_data.plan_name}</a></span>`
+					}
+				},
+				{
+					targets: 1,
+					render: function (data, type, row, meta) {
+
+						//
+						//	1.	By default we assume that the plan is not
+						//		owned by the loged-in Advisor.
+						//
+						var owner = "No";
+
+						//
+						//	2.	Check if the owner of the plan matches the
+						//		loged-in advisor.
+						//
+						if(container.obj.cognito_id == row.owners.advisor_id)
+						{
+							owner = "Yes"
+						}
+
+						//
+						//	->	Return the result.
+						//
+						return owner;
+					}
+				},
+				{
+					targets: 2,
+					render: function (data, type, row, meta) {
+
+						//
+						//	1.	By default we assume the Advisor is the owner
+						//		and thus has no rights, meaning he have all
+						//		the rights.
+						//
+						var right = "N/A";
+
+						//
+						//
+						//
+						if(row.rights)
+						{
+							//
+							//	2.	Make sure we have the right key
+							//
+							if(row.rights.executive)
+							{
+								//
+								//	1.	Loop over the array of executives and
+								//		look for a match
+								//
+								row.rights.executive.forEach(function(e_right) {
+
+									if(container.obj.attributes.email == e_right)
+									{
+										right = "Executive";
+									}
+
+								});
+							}
+
+							//
+							//	3.	Make sure we have the right key
+							//
+							if(row.rights.read)
+							{
+								//
+								//	1.	Loop over the array of read and
+								//		look for a match
+								//
+								row.rights.read.forEach(function(r_right) {
+
+									if(container.obj.attributes.email == r_right)
+									{
+										right = "Read";
+									}
+
+								});
+							}
+
+							//
+							//	4.	Make sure we have the right key
+							//
+							if(row.rights.write)
+							{
+								//
+								//	1.	Loop over the array of write and
+								//		look for a match
+								//
+								row.rights.write.forEach(function(w_right) {
+
+									if(container.obj.attributes.email == w_right)
+									{
+										right = "Write";
+									}
+
+								});
+							}
+
+						}
+
+						//
+						//	->	Return the result.
+						//
+						return right;
+					}
+				},
+				{
+					targets: 3,
+					render: function (data, type, row, meta) {
+						return (row.owners.investor_id) ? "Yes" : "No"
+					}
+				}
+			]
+		});
+
+	});
+
+}
+
+</script>

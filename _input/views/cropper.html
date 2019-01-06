@@ -1,0 +1,239 @@
+<style>
+	.wrapper {
+		max-width: 1170px;
+		width: 100%;
+	}
+
+	.imageBox {
+		position: relative;
+		height: 400px;
+		width: 400px;
+		border: 1px solid #aaa;
+		background: #fff;
+		overflow: hidden;
+		background-repeat: no-repeat;
+		cursor: move;
+	}
+
+	.imageBox .thumbBox {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 200px;
+		height: 200px;
+		margin-top: -100px;
+		margin-left: -100px;
+		box-sizing: border-box;
+		border: 1px solid rgb(102, 102, 102);
+		box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+		background: none repeat scroll 0% 0% transparent;
+	}
+
+	.imageBox .spinner {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		text-align: center;
+		line-height: 400px;
+		background: rgba(0, 0, 0, 0.7);
+	}
+
+	.container {
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		right: 0;
+		bottom: 0;
+	}
+
+	.action {
+		width: 400px;
+		height: 30px;
+		margin: 10px 0;
+	}
+
+	.cropped {
+		float: right;
+		position: absolute;
+		right: 0;
+		top: 0;
+
+	}
+
+	.cropped>img {
+		margin-right: 0;
+		border: 10px solid #e4e4e4;
+	}
+
+	.imageBox-outer {
+		max-width: 400px;
+		width: 100%;
+		margin: 20px auto;
+	}
+</style>
+<script src="assets/js/jquery-1.11.1.min.js"></script>
+<script src="assets/js/cropbox.js"></script>
+
+<div class="imageBox-outer">
+	<div class="imageBox">
+		<div class="thumbBox"></div>
+		<div class="spinner" style="display: none">Choose Picture....</div>
+	</div>
+	<div class="action">
+		<input type="file" id="file" accept="image/png,image/jpeg" style="float:left; width: 250px">
+		<input type="button" id="btn_crop" value="Crop" style="float: right">
+		<input type="button" id="btn_zoom_in" value="+" style="float: right">
+		<input type="button" id="btn_zoom_out" value="-" style="float: right">
+	</div>
+	<div class="cropped">
+
+	</div>
+</div>
+
+<script>
+
+	$(window).load(function () {
+
+		var options = {
+			thumbBox: '.thumbBox',
+			spinner: '.spinner',
+			imgSrc: '',
+			type: 'image/png'
+		};
+
+		var cropper = $('.imageBox').cropbox(options);
+
+		$('#file').on('change', function () {
+
+			var reader = new FileReader();
+
+			//
+			//	1.	Get the selected image from file uploader
+			//		and set it to cropper to crop it
+			//
+			reader.onload = function (fileUploader) {
+
+				options.imgSrc = fileUploader.target.result;
+
+				cropper = $('.imageBox').cropbox(options);
+
+			}
+
+			var fileType = this.files[0].type;
+
+			//
+			//	2.	Show alert message if selected file isn't a jpg/png file
+			//
+			if (fileType != "image/png" && fileType != "image/jpg" && fileType != "image/jpeg") {
+				alert("Only jpg/jpeg and png files are allowed!");
+				return;
+			}
+
+			//
+			//	3.	Set the type(jpg/png) of selected image
+			//		to the cropper so that it will make the same format Base64
+			//
+			options.type = fileType;
+
+			//
+			//	4.	Set the selected file in reader
+			//		to show on canvas. 
+			//		It also runs the onload function of reader.
+			//
+			reader.readAsDataURL(this.files[0]);
+
+		});
+
+		$('#file').on('click', function () {
+
+			//
+			//	1.	Delete the previous shown cropped image 
+			//		while selecting next image
+			//
+			$('.cropped').empty();
+
+		});
+
+		$('#btn_crop').on('click', function () {
+
+			//
+			//	1.	Get the Base64 IMG URL so we can display the preview
+			//		of the cropped image on the page
+			//
+			var img = cropper.getDataURL();
+
+			//
+			//	2.	Get the Buffer, which in the browser is an Array of
+			//		integers so we can actually uploaded it to S3.
+			//
+			var blob = cropper.getBlob();
+
+			//
+			//	3.	Display the cropped image on to the website
+			//
+			$('.cropped').append('<p>Cropped Image:</p><img src="' + img + '">');
+
+			//
+			//	4.	Get the fresh credentials from COgnito
+			//
+			get_credentials(cognit_user, function (error, obj) {
+
+				//
+				//	1.	Create a request object which will allow us to monitor the
+				//		progress of the upload
+				//
+				var request = obj.s3.putObject({
+					Bucket: 'drive.retireryte.net',
+					Key: 'avatars/cropped.jpg',
+					Body: blob
+				});
+
+				//
+				//	2.	Add a listener to react every time there is a progress
+				//		update so we know how much of the file was sent.
+				//
+				request.on('httpUploadProgress', function (progress) {
+
+					//console.log(progress.loaded + " of " + progress.total + " bytes");
+					//console.log(Math.floor((progress.total - progress.loaded) / progress.total * 100));
+
+				});
+
+				//
+				//	3.	Start the upload process
+				//
+				request.send(function (res) {
+
+					console.log('uploaded');
+
+				});
+
+			})
+
+		});
+
+		$('#btn_zoom_in').on('click', function () {
+
+			//
+			//	1.	Zoom in the selected image 
+			//		to select the particular area to crop
+			//
+			cropper.zoomIn();
+
+		});
+
+		$('#btn_zoom_out').on('click', function () {
+
+			//
+			//	1.	Zoom out the selected image
+			//		to select the particular area to crop
+			//
+			cropper.zoomOut();
+
+		});
+
+	});
+
+</script>

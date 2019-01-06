@@ -1,0 +1,237 @@
+<html lang="en">
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="keywords" content="Retireryte">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="./assets/favicons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="./assets/favicons/favicon-16x16.png">
+	<link rel="mask-icon" href="./assets/favicons/safari-pinned-tab.svg" color="#807a00">
+	<meta name="apple-mobile-web-app-title" content="Retireryte">
+	<meta name="application-name" content="Retireryte">
+	<meta name="msapplication-TileColor" content="#ffc40d">
+	<meta name="msapplication-TileImage" content="./assets/favicons/mstile-144x144.png">
+	<meta name="msapplication-config" content="./assets/favicons/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+
+	<title>{{ title }}</title>
+	<meta name="description" content="{{ description }}">
+
+	<link rel="stylesheet" href="./assets/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="./assets/css/open-iconic-bootstrap.min.css" >
+	<link rel="stylesheet" href="./assets/css/flatpickr.css">
+	<link rel="stylesheet" href="./assets/css/fontawesome.all.css">
+	<link rel="stylesheet" href="./assets/css/pace.css">
+	<link rel="stylesheet" href="./assets/css/open-iconic.css">
+	<link rel="stylesheet" href="./assets/css/main.css">
+	<link rel="stylesheet" href="./assets/css/custom.css">
+	<link rel="stylesheet" href="./assets/css/jquery-calendar.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/BarChart.css">
+
+	<script src="./assets/js/popper.min.js"></script>
+	<script src="./assets/js/jquery-3.3.1.min.js"></script>
+	<script src="./assets/js/bootstrap-4.1.2.min.js"></script>
+	<script src="./assets/js/amazon-cognito-identity.min.js"></script>
+	<script src="./assets/js/aws-sdk-2.279.1.min.js"></script>
+
+	<script src="./assets/js/jquery.easypiechart-2.1.7.min.js"></script>
+	<script src="./assets/js/jquery.dataTables-1.10.19.min.js"></script>
+	<script src="./assets/js/stacked-menu.min.js"></script>
+	<script src="./assets/js/perfect-scrollbar-1.4.0.min.js"></script>
+	<script src="./assets/js/main.min.js"></script>
+	<script src="./assets/js/flatpickr-4.5.0.min.js"></script>
+	<script src="./assets/js/chart-2.7.2.min.js"></script>
+	<script src="./assets/js/dataTables.bootstrap-1.10.js"></script>
+	<script src="./assets/js/uuid-v3.3.2.min.js"></script>
+	<script src="./assets/js/js.storage-1.0.4.js"></script>
+	<script src="./assets/js/public-suffix-list.min.js"></script>
+	<script src="./assets/js/jquery-calendar.js"></script>
+	<script src="./assets/js/jquery.number.js"></script>
+
+	<script src="./assets/js/rr.js"></script>
+
+</head>
+
+<body>
+
+	<div class="app">
+		<header class="app-header">
+			<div class="top-bar">
+				<div class="top-bar-brand">
+					<a href="/">
+						<img src="./assets/img/brand.png" height="52" alt="Retireryte">
+					</a>
+				</div>
+
+				<div class="top-bar-list">
+
+					<div class="top-bar-item px-2 d-none">
+
+						<button class="hamburger hamburger-squeeze" type="button" data-toggle="aside" aria-label="Menu" aria-controls="navigation">
+							<span class="hamburger-box">
+								<span class="hamburger-inner"></span>
+							</span>
+						</button>
+
+					</div>
+
+					<div class="top-bar-item top-bar-item-full"></div>
+
+					<div class="top-bar-item top-bar-item-right px-0 d-sm-flex">
+
+						<div class="dropdown">
+							<button class="btn-account d-md-flex" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<span class="account-summary d-lg-block">
+									<span id="full_name" class="account-name"></span>
+								</span>
+								<span class="user-avatar">
+									<img class="avatar_img" alt="" src="assets/img/unknown-profile.jpg">
+								</span>
+							</button>
+
+							<div class="dropdown-arrow dropdown-arrow-left"></div>
+
+							<div class="dropdown-menu">
+
+								<a class="dropdown-item" href="settings.html">
+									<span class="dropdown-icon oi oi-person"></span> Settings
+								</a>
+
+								<a class="dropdown-item" id="logout" onclick="clear_storage()" href="">
+									<span class="dropdown-icon oi oi-account-logout"></span> Logout
+								</a>
+
+								<div class="dropdown-divider"></div>
+
+								<a class="dropdown-item" href="help.html">Help</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main class="app-main">
+			<div class="wrapper">
+					<div class="spinner_overlay" style="display: none;">
+							<div class="spinner">Loading...</div>
+						</div>
+
+				{{>body}}
+
+			</div>
+			<footer class="app-footer ">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-3 col-md-3 col-sm-3 col-12 right-border top-padding">
+							<h5>Company Address</h5>
+							<img class="img-fluid" src="./assets/img/brand.png" alt="Retireryte">
+							<p>34/5 evergreen road,
+								<br/> concord city New work,
+								<br/> United States
+							</p>
+						</div>
+
+						<div class="col-lg-3 col-md-3 col-sm-3 col-12 right-border top-padding">
+							<h5>Site Map</h5>
+							<div class="footer-links">
+								<ul>
+									<li>
+										<a href="home.html">Home</a>
+									</li>
+									<li>
+										<a href="settings.html">Settings</a>
+									</li>
+									<li>
+										<a href="help.html">Help</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 col-12 right-border top-padding ">
+							<h5>Resources</h5>
+							<div class="footer-links">
+								<ul>
+									<li>
+										<a href="help.html">Help</a>
+									</li>
+									<li>
+										<a href="faq.html">F.A.Q</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-lg-3 col-md-3 col-sm-3 col-12 top-padding">
+							<h5>Company</h5>
+							<div class="footer-links">
+								<ul>
+									<li>
+										<a href="about.html">About Us</a>
+									</li>
+									<li>
+										<a href="contact.html">Contact Us</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+
+			</footer>
+			<div class="copyright">
+
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-12  text-center">
+							<a class="copy-link">© 2018. All right reserved.</a>
+						</div>
+						<div class="col-lg-4 col-md-4 col-sm-4 col-12  text-center">
+							<div class="terms">
+								<a href="terms.html">Terms</a> &nbsp;
+								<a href="privacy.html">Privacy</a>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-4 col-sm-4 col-12  text-center social-links">
+
+							<a href="facebook.com">
+								<i class="fab fa-facebook-square"></i>
+							</a>
+							<a href="twitter.com">
+								<i class="fab fa-twitter-square"></i>
+							</a>
+							<a href="in.linkedin.com">
+								<i class="fab fa-linkedin"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+ 	</div>
+
+	<script>
+	
+	//
+ 	//	Set logout url dynamically
+ 	//
+ 	$('#logout').attr('href', 'https://access.' + base_domain.domain + '/sign_out');
+
+	//
+	//	Showing CSS placeholder animation prior for the data to show up.
+	//
+	show_avatar_animation();
+
+	//
+	//	Grab the user name and avatar to display in the top right corner
+	//
+	bind_user_details(cognit_user);
+
+	</script>
+
+</body>
+</html>

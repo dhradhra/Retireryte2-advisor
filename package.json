@@ -1,0 +1,23 @@
+{
+  "name": "advisor.retireryte.com",
+  "version": "1.0.0",
+  "description": "This page helps Advisors manage their Investors.",
+  "main": "index.js",
+  "scripts": {
+    "build": "avocado -s .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://davidgatti@github.com/Retireryte/advisor.retireryte.com.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Retireryte/advisor.retireryte.com/issues"
+  },
+  "homepage": "https://github.com/Retireryte/advisor.retireryte.com#readme",
+  "dependencies": {
+    "@0x4447/avocado": "1.4.0"
+  }
+}

@@ -1,0 +1,260 @@
+<script src="./assets/js/moment-2.22.2.min.js"></script>
+<script src="./assets/js/datetime-moment.js"></script>
+
+<div class="page">
+	<div class="page-inner">
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Investors</a>
+						<a href="settings.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Settings</a>
+					</li>
+				</ol>
+			</nav>
+			<div class="d-md-flex align-items-md-start">
+				<h1 class="page-title mr-sm-auto">Settings</h1>
+
+				<div id="dt-buttons" class="btn-toolbar"></div>
+			</div>
+		</header>
+
+		<div class="page-section">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="card card-fluid">
+						<h6 class="card-header">Your Details</h6>
+
+						<nav class="nav nav-tabs flex-column">
+							<a href="profile.html" class="nav-link">Profile</a>
+							<a href="payment.html" class="nav-link">Payment</a>
+							<a href="payout.html" class="nav-link">Payout</a>
+							<a href="invoices.html" class="nav-link active">Invoices</a>
+						</nav>
+					</div>
+				</div>
+
+				<div class="col-lg-8">
+					<div class="card card-fluid">
+						<h6 class="card-header">Invoices</h6>
+
+						<div class="card-body">
+
+							<table id="table_invoices" class="display table">
+								<thead>
+									<tr>
+										<th>Date</th>
+										<th>Status</th>
+										<th>Next Charge</th>
+										<th>Price</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="odd">
+										<td valign="top" colspan="4" class="dataTables_empty">
+											<div class="table-spinner">
+												<div class="spinner">Loading...</div>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+//
+//	Get fresh credentials from Cognito
+//
+get_credentials(cognit_user, function(error, obj) {
+
+	//
+	//	1.	Check for internal errors
+	//
+	if(error)
+	{
+		console.error(error);
+	}
+
+	//
+	//	2.	Create a container that will be passed between promises so
+	//		we have one central place where all the data goes
+	//
+	var container = {
+		obj: obj,
+		invoices: []
+	};
+
+	//
+	//	->	Start the chain
+	//
+	get_advisor_invoices(container)
+		.then(function(container) {
+
+			return render_the_table(container);
+
+		}).then(function(container) {
+
+			console.log('Investor Details are Ready.');
+
+		}).catch(function(error) {
+
+			console.error(error);
+
+		});
+
+});
+
+//	 _____    _____     ____    __  __   _____    _____   ______    _____
+//	|  __ \  |  __ \   / __ \  |  \/  | |_   _|  / ____| |  ____|  / ____|
+//	| |__) | | |__) | | |  | | | \  / |   | |   | (___   | |__    | (___
+//	|  ___/  |  _  /  | |  | | | |\/| |   | |    \___ \  |  __|    \___ \
+//	| |      | | \ \  | |__| | | |  | |  _| |_   ____) | | |____   ____) |
+//	|_|      |_|  \_\  \____/  |_|  |_| |_____| |_____/  |______| |_____/
+
+//
+//	Query the DDB to get all the Investors that the Agent manages
+//
+function get_advisor_invoices(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName : 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ProjectionExpression: "stripe.invoices"
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	2.	Make sure we have what we need before we do anything
+			//
+			if(data.Item.stripe)
+			{
+				//
+				//	1.	Save the response for the next Promise
+				//
+				container.invoices = data.Item.stripe.invoices;
+			}
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	After we query the DDB and collect all the data that we care about we
+//	can render the table.
+//
+function render_the_table(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		$('#table_invoices').DataTable({
+			dom: `<'text-muted'Bi>
+			<'table-responsive'tr>
+			<p>`,
+			buttons: [
+				'copyHtml5',
+				{ extend: 'print', autoPrint: false }
+			],
+			language: {
+				paginate: {
+					previous: 'Prev',
+					next: 'Next'
+				},
+				sLoadingRecords : '<div class="table-spinner"><div class="spinner">Loading...</div></div>',
+				sProcessing: '<div class="table-spinner"><div class="spinner">Loading...</div></div>'
+			},
+			autoWidth: false,
+			data: container.invoices,
+			deferRender: true,
+			order: [0, 'asc'],
+			columns: [
+				{ data: 'date' },
+				{ data: 'payed' },
+				{ data: 'next_payment_attempt' },
+			],
+			bStateSave: true,
+			fnStateLoaded: function (oSettings, oData) {
+				$.fn.dataTable.moment("MMMM Do YYYY, h:mm:ss a");
+    		},
+			columnDefs: [
+				{
+					targets: 0,
+					render: function (data, type, row, meta) {
+						return '<span>' + moment.unix(row.date).format("MMMM Do YYYY, h:mm:ss a") + '</span>'
+					}
+				},
+				{
+					targets: 1,
+					render: function (data, type, row, meta) {
+
+						return (row.paid) ? "Payed" : "Unpaid";
+					}
+				},
+				{
+					targets: 2,
+					render: function (data, type, row, meta) {
+
+						var value = "N/A";
+
+						if(row.next_payment_attempt)
+						{
+							value = '<span>' + moment.unix(row.next_payment_attempt).format("MMMM Do YYYY, h:mm:ss a") + '</span>';
+						}
+
+						return value;
+
+					}
+				},
+				{
+					targets: 3,
+					render: function (data, type, row, meta) {
+
+						sum = row.amount_paid / 100;
+
+						return "$" + sum;
+
+					}
+				}
+
+			]
+		});
+
+	});
+
+}
+
+</script>

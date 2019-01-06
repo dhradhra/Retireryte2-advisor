@@ -1,0 +1,511 @@
+<div class="page">
+	<div class="page-inner">
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<b>Home</b></a>
+						<a href="plans.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i><b>Plans</b></a>
+						<a href="plan.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i><b>Plan</b></a>
+						<span>
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Invite Advisor</span>
+					</li>
+				</ol>
+			</nav>
+			<p class="lead">
+				<span class="font-weight-bold">Invite Advisor</span>
+			</p>
+			<hr class="bold-hr">
+			<p><span class="grey-sub-head">Invite an advisor to help you out with your plan. </span></p>
+		</header>
+
+		<section id="base-style">
+				<form>
+					<fieldset  class="card">
+						<div class="card-body">
+						<legend>Basic Information</legend>
+						<p>Select access level:</p>
+
+						<div class="form-check">
+							<input class="form-check-input" name="rights"  type="radio" id="read" value="read" required>
+							<label class="form-check-label" for="read">
+								Read Access
+							</label>
+						</div>
+
+						<div class="form-check">
+							<input class="form-check-input" name="rights" type="radio" id="write" value="write" required>
+							<label class="form-check-label" for="write">
+								Write Access
+							</label>
+						</div>
+
+						<div class="form-check">
+							<input class="form-check-input" name="rights" type="radio" id="executive" value="executive" required>
+							<label class="form-check-label" for="executive">
+								Executive Access
+							</label>
+						</div>
+
+						<div class="row top-margin">
+							<div class="form-group col-sm-4">
+								<label for="first_name">First Name</label>
+
+								<input type="text" class="form-control" id="first_name" placeholder="e.g. John" required>
+							</div>
+
+							<div class="form-group col-sm-4">
+								<label for="email">Email</label>
+
+								<input type="email" class="form-control" id="email" placeholder="e.g. name@example.com" required>
+							</div>
+						</div>
+					</div>
+					</fieldset>
+						<div class="form-actions card btm-btn-padd d-block">
+							<button onclick="history.back()" class="btn btn-yellow">Back</button>
+
+							<button type="submit" id="btn_save" class="btn btn-success">Invite</button>
+						</div>
+				</form>		
+		</section>
+	</div>
+</div>
+
+<!--
+
+    The Modal
+
+-->
+<div class="modal fade" id="existing_investor_modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Advisor Exists</h4>
+
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				You already invited this investor.
+			</div>
+
+			<div class="modal-footer">
+				<button id="btn_ok" type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+//
+//	Get all the query string values from url
+//
+var queries = parse_the_url();
+
+//
+//	Update crumbs with proper URL
+//
+update_crumbs(queries);
+
+//
+//  <<> React when user presses enter on the form input fields
+//      trigger the submit form event.
+//
+$('.form-control').keypress(function(event) {
+
+	//
+	//	1.	Check if we are dealing with the Enter event.
+	//
+	if(event.which == 13)
+	{
+		//
+		//	1.	Problematically trigger a button click, which then will trigger
+		//		the submit form.
+		//
+		$('#btn_save').click();
+
+		//
+		//	->	Stop the execution of the default action.
+		//
+		return false;
+	}
+
+});
+
+//
+//	<<>	React when the user wants submit the form.
+//
+$('form').on("submit", function(event) {
+
+	//
+	//	1.	Start the spinner
+	//
+	$('.spinner_overlay').show();
+
+	//
+	//	2.	Prevent the default form action so we can process the action
+	//		our way.
+	//
+	event.preventDefault();
+	event.stopPropagation();
+
+	//
+	//	3.	Get all the data from the form
+	//
+	let form_data = scrape_form($("form :input"));
+	let selected_right = $("input[name=rights]:checked").val();
+
+	//
+	//	4.	Disable the button to prevent people to keep clicking on ti while
+	//		we are saving
+	//
+	$(this).addClass("disabled");
+
+	//
+	//	5.	Update the button to inform the user we are saving
+	//
+	$(this).text("Inviting...");
+
+	//
+	//	6.	Get fresh credentials from Cognito
+	//
+	get_credentials(cognit_user, function(error, obj) {
+
+		//
+		//	1.	Check for internal errors
+		//
+		if(error)
+		{
+			console.error(error);
+		}
+
+		//
+		//	2.	Create a container that will be passed between promises so
+		//		we have one central place where all the data goes
+		//
+		var container = {
+			//
+			//	Holds all the Cognito related data and AWS authenticated
+			//	services.
+			//
+			obj: obj,
+			//
+			//	An object with all the form data easily accessible
+			//
+			form_data: form_data,
+			//
+			//	This variable holds the selected rights
+			//
+			selected_right: selected_right,
+			//
+			//	Pass the URL from the browser to extract all the queries
+			//
+			url: window.location.href,
+			//
+			//	Place holder for all the URL Queries
+			//
+			queries: queries
+		};
+
+		//
+		//	->	Start the chain
+		//
+		check_if_aleady_invited(container)
+			.then(function(container) {
+
+				return check_if_tmp_exist(container);
+
+			}).then(function(container) {
+
+				return invite_advisor(container);
+
+			}).then(function(container) {
+
+				console.log('done');
+
+				history.back();
+
+			}).catch(function(error) {
+
+				console.error(error);
+
+			});
+
+	});
+
+});
+
+//	 _____    _____     ____    __  __   _____    _____   ______    _____
+//	|  __ \  |  __ \   / __ \  |  \/  | |_   _|  / ____| |  ____|  / ____|
+//	| |__) | | |__) | | |  | | | \  / |   | |   | (___   | |__    | (___
+//	|  ___/  |  _  /  | |  | | | |\/| |   | |    \___ \  |  __|    \___ \
+//	| |      | | \ \  | |__| | | |  | |  _| |_   ____) | | |____   ____) |
+//	|_|      |_|  \_\  \____/  |_|  |_| |_____| |_____/  |______| |_____/
+//
+
+//
+//	Before we can add an Advisor we need to check if this email wasn't
+//	already added.
+//
+function check_if_aleady_invited(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName : 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ProjectionExpression: "advisors"
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.get(params, function(error, data) {
+
+			//
+			//	1.	Check for internal errors
+			//
+			if(error)
+			{
+				return reject(new Error("get_advisor" + error.message));
+			}
+
+			//
+			//	2.	By default we assume that
+			//
+			var found = false;
+
+			//
+			//	3.	Check if we got an item back and if so, we mark this
+			//		run so a new user won't be added.
+			//
+			if(data.Item)
+			{
+				found = true;
+			}
+
+			//
+			//	4.	Save the result to the new promise
+			//
+			container.found = found;
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	The DynamoDB SDK dose not support creating empty structure tree, this
+//	means that for example we can't create an empty array like this:
+//
+//		tmp.name = [];
+//
+//	When tmp dose not exist. We need to first ensure that tmp exists
+//	before we do anything with that tmp. Meaning the SDK dose not help
+//	us out at all, and we need to do everything by hand.
+//
+function check_if_tmp_exist(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	DDB query
+		//
+		let params = {
+			TableName: 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ExpressionAttributeNames: {
+				'#tmp': 'tmp',
+			},
+			ExpressionAttributeValues: {
+				":empty": {}
+			},
+			UpdateExpression: 'SET #tmp = if_not_exists(#tmp, :empty)'
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.update(params, function(error, data) {
+
+			//
+			//	1.	Stop the spinner
+			//
+			$('.spinner_overlay').hide();
+
+			//
+			//	2.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(error);
+			}
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	Once everything is in place we add the investor email to the the Advisor
+//	that sent the invitation.
+//
+function invite_advisor(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	>>>	Check if we have to skip this step
+		//
+		if(!container.found)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
+		//
+		//	1.	DDB query
+		//
+		var params = {
+			TableName: 'Users',
+			Key: {
+				cognito_id: container.obj.cognito_id
+			},
+			ExpressionAttributeNames: {
+				"#tmp": "tmp",
+				"#advisor": "advisor"
+			},
+			ExpressionAttributeValues: {
+				":advisor": [{
+					first_name: container.form_data.first_name,
+					invited_email: container.form_data.email,
+					rights: container.selected_right,
+					owner_id: container.obj.cognito_id,
+					plan_id: container.queries.plan_id
+				}],
+				':empty_list': []
+			},
+			UpdateExpression: 'set #tmp.#advisor = list_append(if_not_exists(#tmp.#advisor, :empty_list), :advisor)',
+		};
+
+		//
+		//	->	Execute the command
+		//
+		container.obj.ddb.update(params, function(error, data) {
+
+			//
+			//	1.	Check if there was an internal error
+			//
+			if(error)
+			{
+				return reject(new Error("update_advisor" + error.message));
+			}
+
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//	  ____    _   _
+//	 / __ \  | \ | |
+//	| |  | | |  \| |
+//	| |  | | | . ` |
+//	| |__| | | |\  |
+//	 \____/  |_| \_|
+//
+
+//
+//  React to click on the Modal view
+//
+$('#btn_ok').on('click', function() {
+
+	//
+	//	1.	Restore original text
+	//
+	$('#btn_save').text("Save");
+
+	//
+	//	2.	Re-Enable the button
+	//
+	$('#btn_save').removeClass("disabled");
+
+	//
+	//	3.	Clear email field on click of OK button
+	//
+    $('#email').val('');
+
+	//
+	//	4.	focus on it to enter new one.
+	//
+    $('#email').focus();
+    
+});
+
+//	 ______  _    _  _   _   _____  _______  _____  ____   _   _   _____
+//	|  ____|| |  | || \ | | / ____||__   __||_   _|/ __ \ | \ | | / ____|
+//	| |__   | |  | ||  \| || |        | |     | | | |  | ||  \| || (___
+//	|  __|  | |  | || . ` || |        | |     | | | |  | || . ` | \___ \
+//	| |     | |__| || |\  || |____    | |    _| |_| |__| || |\  | ____) |
+//	|_|      \____/ |_| \_| \_____|   |_|   |_____|\____/ |_| \_||_____/
+//
+
+//
+//	Update the BreadCrumbs to update the querystring with URL
+//
+function update_crumbs(queries)
+{
+	//
+	//	1.	Make the query URL for plans page
+	//
+	var query = $("a[href='plans.html']").attr('href')
+			  + "?investor_id="
+			  + queries.investor_id
+
+	//
+	//	2.	Make the query URL for plan page
+	//
+	var query_for_plan = $("a[href='plan.html']").attr('href')
+			+ "?plan_id="
+			+ queries.plan_id
+			+ "&investor_id="
+			+ queries.investor_id
+
+	//
+	//	3.	Append the query to the anchor.
+	//
+	$("a[href='plans.html']").attr('href', query);
+
+	$("a[href='plan.html']").attr('href', query_for_plan);
+
+}
+
+</script>

@@ -1,0 +1,844 @@
+<style>
+	.crop-popup {
+		padding: 20px 0;
+	}
+
+	.crop-popup button.close {
+		position: absolute;
+		right: 39px;
+		width: 50px;
+		height: 50px;
+		background: #346CB0;
+		text-shadow: none;
+		opacity: 1;
+		border-radius: 100%;
+		line-height: 0;
+		top: 28px;
+		font-size: 32px;
+		vertical-align: middle;
+		z-index: 99;
+		color: #fff;
+	}
+
+	.crop-popup .modal-header {
+		padding: 1.5rem 1.4rem 0rem;
+	}
+
+	.crop-popup .modal-body {
+		padding: 0;
+	}
+
+	.crop-popup .modal-dialog {
+		max-width: 454px;
+	}
+
+	.crop-popup .modal-content {
+		border-radius: 11px;
+		box-shadow: 0 0px 18px 0px rgba(0, 0, 0, 0.5);
+	}
+
+	.cropped {
+		right: -300px;
+	}
+
+	.crop-popup .close span {
+		vertical-align: middle;
+		line-height: 11px;
+	}
+
+	.action {
+		width: 185px;
+		height: 30px;
+		margin: 10px 0;
+		text-align: center;
+		margin: 20px auto;
+	}
+
+	.action button span {
+		transition: 0.7s;
+	}
+
+	.action button:hover span {
+		transform: scale(1.4);
+	}
+
+	.action button {
+		background: #989898;
+		padding: 0px 0px;
+		color: white;
+		margin: 0px 4px;
+		border: 0;
+		overflow: hidden;
+		height: 30px;
+		border-radius: 3px;
+		width: 31px;
+		box-shadow: 0px 0px 6px #313030;
+	}
+
+	.action button:hover span {
+		transform: scale(1.4);
+	}
+
+	.action .crop-name {
+		background: #f9ab2c;
+		padding: 4px 25px;
+		width: auto;
+		color: white !important;
+	}
+
+	.action .crop-name:focus {
+		color: white;
+	}
+
+	.imageBox .thumbBox {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 200px;
+		height: 200px;
+		margin-top: -100px;
+		margin-left: -100px;
+		box-sizing: border-box;
+		border: 1px solid rgb(102, 102, 102);
+		box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+		background: none repeat scroll 0% 0% transparent;
+	}
+
+	.imageBox .spinner {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		text-align: center;
+		line-height: 400px;
+		background: rgba(0, 0, 0, 0.7);
+	}
+
+	.imageBox {
+		position: relative;
+		height: 400px;
+		width: 400px;
+		border: 1px solid #aaa;
+		background: #fff;
+		overflow: hidden;
+		background-repeat: no-repeat;
+		cursor: move;
+		margin: 20px auto;
+	}
+</style>
+
+<script src="assets/js/cropbox.js"></script>
+<script src="./assets/js/jquery-input-mask-phone-number-1.0.js"></script>
+
+<div class="page">
+
+	<div class="page-inner">
+
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Investors</a>
+						<a href="settings.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Settings</a>
+					</li>
+				</ol>
+			</nav>
+
+			<div class="d-md-flex align-items-md-start">
+				<h1 class="page-title mr-sm-auto">Settings</h1>
+				<div id="dt-buttons" class="btn-toolbar"></div>
+			</div>
+
+		</header>
+
+		<div class="page-section">
+
+			<div class="row">
+
+				<div class="col-lg-4">
+
+					<div class="card card-fluid">
+						<h6 class="card-header">Your Details</h6>
+
+						<nav class="nav nav-tabs flex-column">
+							<a href="profile.html" class="nav-link active">Profile</a>
+							<a href="payment.html" class="nav-link">Payment</a>
+							<a href="payout.html" class="nav-link">Payout</a>
+							<a href="invoices.html" class="nav-link">Invoices</a>
+						</nav>
+
+					</div>
+
+				</div>
+
+				<div class="col-lg-8">
+					<form>
+						<div class="card card-fluid">
+
+							<h6 class="card-header">Profile</h6>
+
+							<div class="card-body">
+
+								<div class="media mb-3">
+
+									<div class="user-avatar user-avatar-xl fileinput-button">
+										<div class="fileinput-button-label">Change photo</div>
+
+										<img class="avatar_img" alt="User Avatar" src="assets/img/unknown-profile.jpg">
+
+										<input id="avatar_file" type="file" accept="image/png,image/jpeg">
+									</div>
+
+									<div class="media-body pl-3">
+										<h3 class="card-title">Public avatar</h3>
+
+										<h6 class="card-subtitle text-muted">Click the current avatar to change your photo.</h6>
+
+										<div id="progress-avatar" class="progress progress-xs fade">
+											<div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuemin="20" aria-valuemax="100"></div>
+										</div>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+									<label for="first_name" class="col-md-3">First Name</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="first_name" oninvalid="this.setCustomValidity('Please enter first name')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter first name" required>
+									</div>
+								</div>
+
+								<div class="form-row">
+									<label for="last_name" class="col-md-3">Last Name</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="last_name" oninvalid="this.setCustomValidity('Please enter last name')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter last name" required>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="card card-fluid">
+
+							<h6 class="card-header">Address</h6>
+
+							<div class="card-body">
+
+								<div class="form-row">
+
+									<label for="country" class="col-md-3 mb-3">Country</label>
+
+									<div class="col-md-9 mb-3">
+										<select id="country" class="custom-select">
+											<option value="">Select your country</option>
+											<option value="USA" selected>United States</option>
+										</select>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="address" class="col-md-3 mb-3">Address</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="address" oninvalid="this.setCustomValidity('Please enter your address')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your address" required>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="city" class="col-md-3 mb-3">City</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="city" oninvalid="this.setCustomValidity('Please enter your city')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your city" required>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="state" class="col-md-3 mb-3">State</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="state" oninvalid="this.setCustomValidity('Please enter your state')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your state" required>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="zip" class="col-md-3 mb-3">Zip / Postal Code</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="zip" oninvalid="this.setCustomValidity('Please enter your zip/postal code')" oninput="setCustomValidity('')" maxlength="255" pattern=".*\S+.*" title="Please enter your zip/postal code" required>
+									</div>
+
+								</div>
+
+								<div class="form-row">
+
+									<label for="phone_nr" class="col-md-3">Phone Nr.</label>
+
+									<div class="col-md-9 mb-3">
+										<input type="text" class="form-control" id="phone_nr">
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						<div class="form-actions">
+							<button type="submit" id="save" class="btn btn-primary ml-auto">Update Profile</button>
+						</div>
+
+						<input type="hidden" id="avatar" value="">
+
+					</form>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<!--
+
+	Modal
+
+-->
+<div id="cropper_modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<h4 class="modal-title">Select and Crop the picture</h4>
+
+				<button type="button" class="close" data-dismiss="modal">
+					<span>&times;</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<div class="imageBox-outer">
+
+					<div class="imageBox">
+						<div class="thumbBox"></div>
+						<div class="spinner" style="display: none">Choose Picture....</div>
+					</div>
+
+					<div class="action">
+						<button id="btn_crop" style="float: right" class="crop-name">Crop</button>
+						<button id="btn_zoom_in" style="float: right"><span class="oi oi-zoom-in"></span></button>
+						<button id="btn_zoom_out" style="float: right"><span class="oi oi-zoom-out"></span></button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+//
+//	1.	Set some default options for cropper
+//
+var options = {
+	thumbBox: '.thumbBox',
+	spinner: '.spinner',
+	imgSrc: '',
+	type: 'image/png'
+};
+
+//
+//	2.	Initialize the cropper with default options
+//
+var cropper = $('.imageBox').cropbox(options);
+
+//
+//	3.	Variable declared to store format/extension of uploaded image
+//		that will used in two future listeners.
+//
+var format = "";
+
+//
+//	4.	Initialize the phone number textbox to attain specific format
+//
+$('#phone_nr').usPhoneFormat({
+	format: '(xxx) xxx-xxxx'
+});
+
+//
+//	5.	Get credentials
+//
+get_credentials(cognit_user, function(error, obj) {
+
+	//
+	//	1.	Check for internal errors
+	//
+	if(error)
+	{
+		return console.error(error);
+	}
+
+	//
+	//	2.	DDB query
+	//
+	var params = {
+		Key: {
+			cognito_id: obj.cognito_id
+		},
+		TableName: "Advisor",
+		ProjectionExpression: "contact"
+	};
+
+	console.log(params)
+
+	//
+	//	->	Execute the command
+	//
+	obj.ddb.get(params, function(error, data) {
+
+		//
+		//	1.	Check if there was an error
+		//
+		if(error)
+		{
+			console.error(error);
+		}
+
+		//
+		//	2.	Update the form with the data that we got
+		//
+		populate_form(data.Item.contact)
+		populate_form(data.Item.contact.address)
+
+		//
+		//	3.	Check to see if the user has an avatar to be grabbed
+		//
+		if(data.Item.contact.avatar)
+		{
+			//
+			//	1.	Prepare the request
+			//
+			var params = {
+				Bucket: 'drive.retireryte.net',
+				Key: 'avatars/' + data.Item.contact.avatar
+			};
+
+			//
+			//	->	Execute the query
+			//
+			obj.s3.getObject(params, function(eerrorrr, data) {
+
+				//
+				//	1.	Check if there was an error
+				//
+				if(error)
+				{
+					console.error(error);
+				}
+
+				//
+				//	2.	Make sure we got something back
+				//
+				if(data.Body)
+				{
+					var base64Data = encode(data.Body);
+
+					$('.avatar_img').attr("src", "data:image/png;base64," + base64Data);
+				}
+
+			});
+		}
+
+	});
+
+});
+
+//
+//	<<>	React when the user wants submit the form.
+//
+$('form').on("submit", function(event) {
+
+	//
+	//	1.	Start the spinner
+	//
+	$('.spinner_overlay').show();
+
+	//
+	//	2.	Prevent the default form action so we can process the action
+	//		our way.
+	//
+	event.preventDefault();
+	event.stopPropagation();
+
+	//
+	//	3.	Disable the button to prevent people to keep clicking on ti while
+	//		we are saving
+	//
+	$('#save').addClass("disabled");
+
+	//
+	//	4.	Get the value of the button so we can set it back once we saved
+	//
+	var btn_value = $('#save').text();
+
+	//
+	//	5.	Update the button to inform the user we are saving
+	//
+	$('#save').text("Saving...");
+
+	//
+	//	6.	Get all the data from the form
+	//
+	var values = scrape_form($("form :input"));
+
+	//
+	//	7.	Make the full name for the user
+	//
+	var full_name = values.first_name
+					+ " "
+					+ values.last_name;
+
+	//
+	//	8.	Get fresh credentials from Cognito
+	//
+	get_credentials(cognit_user, function(error, obj) {
+
+		//
+		//	1.	Check for internal errors
+		//
+		if(error)
+		{
+			console.error(error);
+		}
+
+		//
+		//	2.	DDB query
+		//
+		var params = {
+			TableName: 'Users',
+			Key: {
+				cognito_id: obj.cognito_id
+			},
+			ExpressionAttributeNames: {
+				"#contact": "contact"
+			},
+			ExpressionAttributeValues: {
+				":contact": {
+					"avatar": values.avatar,
+					"first_name": values.first_name,
+					"last_name": values.last_name,
+					"address": {
+						"country": values.country,
+						"address": values.address,
+						"city": values.city,
+						"state": values.state,
+						"zip": values.zip,
+						"phone_nr": values.phone_nr
+					}
+				}
+			},
+			UpdateExpression: 'set #contact = :contact',
+		};
+
+		//
+		//	->	Execute the command
+		//
+		obj.ddb.update(params, function(error, data) {
+
+			//
+			//	1.	Stop the spinner
+			//
+			$('.spinner_overlay').hide();
+
+			//
+			//	2.	Check if there was an internal error
+			//
+			if(error)
+			{
+				console.error(error);
+			}
+
+			//
+			//	3.	Restore the original text of the button
+			//
+			$('#save').text(btn_value);
+
+			//
+			//	4.	Re-enable the button so the user can click again if
+			//		he or she chooses to.
+			//
+			$('#save').removeClass("disabled");
+
+			//
+			//	5.	Set new name to local storage
+			//
+			storage.set('full_name', full_name);
+
+			//
+			//	6.	Populate the form with the new data
+			//
+			bind_user_details(cognit_user);
+
+		});
+
+	});
+
+});
+
+//
+//	<<>	React when the user changes the Avatar
+//
+$("input:file").change(function() {
+
+	//
+	//	1.	Allow us to read files from the users disk
+	//
+	var reader = new FileReader();
+
+	//
+	//	2.	Get the selected image from file unloader and set it to cropper
+	//		to crop it
+	//
+	reader.onload = function (fileUploader) {
+
+		//
+		//	1.	TODO
+		//
+		options.imgSrc = fileUploader.target.result;
+
+		//
+		//	2.	TODO
+		//
+		cropper = $('.imageBox').cropbox(options);
+
+	}
+
+	//
+	//	3.	Get the type of selected image
+	//
+	var file_type = this.files[0].type;
+
+	//
+	//	4.	Get the format/extension of selected image
+	//
+	format = this.files[0].name.split('.')[1];
+
+	//
+	//	5.	Show alert message if selected file isn't a jpg/png file
+	//
+	if (file_type != "image/png" && file_type != "image/jpg" && file_type != "image/jpeg") {
+		alert("Only jpg/jpeg and png files are allowed!");
+		return;
+	}
+
+	//
+	//	6.	Set the type(jpg/png) of selected image to the cropper so that
+	//		it will make the same format Base64
+	//
+	options.type = file_type;
+
+	//
+	//	7.	Set the selected file in reader to show on canvas. It also runs
+	//		the onload function of reader.
+	//
+	reader.readAsDataURL(this.files[0]);
+
+	//
+	//	8.	Show the modal to crop the image
+	//
+	$('#cropper_modal').modal('show');
+
+});
+
+//
+//	<<>	React when user crop the selected image
+//
+$('#btn_crop').on('click', function () {
+
+	//
+	//	1.	Get the Base64 IMG URL so we can display the preview
+	//		of the cropped image on the page
+	//
+	var img = cropper.getDataURL();
+
+	//
+	//	2.	Get the Buffer, which in the browser is an Array of
+	//		integers so we can actually uploaded it to S3.
+	//
+	var blob = cropper.getBlob();
+
+	//
+	//	3.	Get the buffer to store in local storage
+	//
+	var blob_for_storage = cropper.getBlobForStorage();
+
+	//
+	//	4.	Display the cropped image on to the website
+	//
+	$('.avatar_img').attr("src", img);
+
+	//
+	//	5.	Set new avatar to local storage
+	//
+	storage.set('image_data', blob_for_storage);
+
+	//
+	//	6.	Hide the cropper modal after getting cropped image
+	//
+	$('#cropper_modal').modal('hide');
+
+	//
+	//	7.	Start the loader
+	//
+	$('.spinner_overlay').show();
+
+	//
+	//	8.	Randomize the file name of the resume so we don't run in a
+	//		situation where two user could have the same file name which
+	//		would overwrite the resume of another user.
+	//
+	//		UUID V1 is based on a time stamp, which should prevent duplicate
+	//		entries.
+	//
+	var file_name = uuidv1() + '.' + format;
+
+	//
+	//	9.	Get user Credentials to upload the IMG to S3
+	//
+	get_credentials(cognit_user, function(error, obj) {
+
+		//
+		//	1.	Check for internal errors
+		//
+		if(error)
+		{
+			//
+			//	1.	Stop the spinner
+			//
+			$('.spinner_overlay').hide();
+
+			console.error(error);
+		}
+
+		//
+		//	2.	Create a request object which will allow us to monitor the
+		//		progress of the upload
+		//
+		var request = obj.s3.putObject({
+			Bucket: 'drive.retireryte.net',
+			Key: 'avatars/' + file_name,
+			Body: blob
+		});
+
+		//
+		//	3.	Add a listener to react every time there is a progress
+		//		update so we know how much of the file was sent.
+		//
+		request.on('httpUploadProgress', function (progress) {
+
+			//console.log(progress.loaded + " of " + progress.total + " bytes");
+			//console.log(Math.floor((progress.total - progress.loaded) / progress.total * 100));
+
+		});
+
+		//
+		//	4.	Start the upload process
+		//
+		request.send(function(res) {
+
+			//
+			//	1.	DDB query
+			//
+			var params = {
+				TableName: 'Users',
+				Key: {
+					cognito_id: obj.cognito_id
+				},
+				ExpressionAttributeNames: {
+					"#contact": "contact"
+				},
+				ExpressionAttributeValues: {
+					":avatar": file_name
+				},
+				UpdateExpression: 'set #contact.avatar = :avatar',
+			};
+
+			//
+			//	->	Execute the command
+			//
+			obj.ddb.update(params, function(error, data) {
+
+				//
+				//	1. Stop the loader regardless of the result
+				//
+				$('.spinner_overlay').hide();
+
+				//
+				//	2.	Set the file name in hidden variable to get it while updating profile
+				//
+				$('#avatar').val(file_name);
+
+				//
+				//	3.	Check if there was an internal error
+				//
+				if(error)
+				{
+					console.error(error);
+				}
+
+				//
+				//	4.	Populate the form with the new data
+				//
+				bind_user_details(cognit_user);
+
+			});
+
+		});
+
+	});
+
+});
+
+//
+//	<<>	React when user try to zoom in selected image to crop the
+//		particular area
+//
+$('#btn_zoom_in').on('click', function () {
+
+	//
+	//	1.	Zoom in the selected image to select the particular area to crop
+	//
+	cropper.zoomIn();
+
+});
+
+//
+//	<<>	React when user try to zoom out selected image to crop the
+//		particular area
+//
+$('#btn_zoom_out').on('click', function () {
+
+	//
+	//	1.	Zoom out the selected image to select the particular area to crop
+	//
+	cropper.zoomOut();
+
+});
+
+</script>

@@ -1,0 +1,55 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "----------------------------------------";
+      - echo "Entered the Install phase on `date`...";
+      - echo "Nothing to do.";
+      - echo "Instll completed on `date`.";
+      - echo "----------------------------------------";
+  pre_build:
+    commands:
+      - echo "----------------------------------------";
+      - echo "Entered the Pre Build phase on `date`...";
+      - echo "Log the source of the webhook that triggered this build, which will be used to see if we are dealing with a PR or not.";
+      - echo $CODEBUILD_SOURCE_VERSION
+      - echo "Create a Env Variable that by default asumes we are dealing with a PR.";
+      - PULL_REQUEST=true
+      - BRANCH=master
+      - echo "Check if we are dealing with a PR and if we are not - set the flag to false, so we can perform the Build phase.";
+      - echo $CODEBUILD_SOURCE_VERSION | grep -q "pr" || PULL_REQUEST=false
+      - echo "Get the branch that triggered this build."
+      - echo $CODEBUILD_SOURCE_VERSION | grep -qw "staging" && BRANCH=staging || true
+      - echo $CODEBUILD_SOURCE_VERSION | grep -qw "development" && BRANCH=development || true
+      - echo $BRANCH
+      - echo "Extract the repository name from the source URL.";
+      - REPO_NAME=$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's:.*/::')
+      - echo "Pre Build completed on `date`.";
+      - echo "----------------------------------------";
+  build:
+    commands:
+      - echo "----------------------------------------";
+      - echo "Entered the Build phase on `date`...";
+      - echo "Checking if we should build or not, based on PR flag.";
+      - if $PULL_REQUEST; then
+          echo "Pull Request - Skipping Build stage.";
+        else
+          echo "Installing all the modules.";
+          npm install;
+        fi
+      - echo "Build completed on `date`.";
+      - echo "----------------------------------------";
+  post_build:
+    commands:
+      - echo "----------------------------------------";
+      - echo "Entered the Post Build phase...";
+      - rm -rf .github;
+      - rm -rf .git;
+      - echo "Post Build completed on `date`.";
+      - echo "----------------------------------------";
+artifacts:
+  files:
+    - "**/*"
+  name: $REPO_NAME-$BRANCH
+  discard-paths: no

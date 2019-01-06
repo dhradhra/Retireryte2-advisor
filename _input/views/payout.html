@@ -1,0 +1,154 @@
+<script type="text/javascript" src="https://app.quovo.com/ui.js"></script>
+
+<div class="page">
+	<div class="page-inner">
+		<header class="page-title-bar">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="home.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Investors</a>
+						<a href="settings.html">
+							<i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Settings</a>
+					</li>
+				</ol>
+			</nav>
+			<div class="d-md-flex align-items-md-start">
+				<h1 class="page-title mr-sm-auto">Settings</h1>
+		
+				<div id="dt-buttons" class="btn-toolbar"></div>
+			</div>
+		</header>
+
+		<div class="page-section">
+			<div class="row">
+
+				<div class="col-lg-4">
+					<div class="card card-fluid">
+						<h6 class="card-header">Your Details</h6>
+
+						<nav class="nav nav-tabs flex-column">
+							<a href="profile.html" class="nav-link">Profile</a>
+							<a href="payment.html" class="nav-link">Payment</a>
+							<a href="payout.html" class="nav-link active">Payout</a>
+							<a href="invoices.html" class="nav-link">Invoices</a>
+						</nav>
+					</div>
+				</div>
+
+				<div class="col-lg-8">
+
+					<div class="card card-fluid">
+						<h6 class="card-header">Payout with Quovo</h6>
+
+						<div class="card-body">
+
+							<p>We take seriously the security of Rr, and decided to use Quovo, a 3th party solution the specialize in banking integration to provide us with the bare minimum information to allow us to pay you out money on a monthly basis.</p>
+
+							<p>Bellow you'll find a button that will help you connect to your bank, so we can get access to your account number, and routing number without us knowing you password.</p>
+
+						</div>
+
+					</div>
+
+					<div class="card card-fluid">
+						<h6 class="card-header">Connect with Quovo</h6>
+
+						<div class="card-body">
+
+							<button id="quovo_connect" class="btn btn-primary ml-auto disabled">Connect With Quovo</button>
+
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+//
+//
+//
+get_credentials(cognit_user, function(error, obj) {
+
+	//
+	//	1.	Check for internal errors
+	//
+	if(error)
+	{
+		console.error(error);
+	}
+
+	//
+	//	2.	Tell Lambda which function to call
+	//
+	var options = {
+		FunctionName: "Quovo-Token-Get"
+	};
+
+	//
+	//	->	Execute
+	//
+	obj.lambda.invoke(options, function(error, data) {
+
+		//
+		//	1.	Check for internal errors
+		//
+		if(error)
+		{
+			console.error(error);
+		}
+
+		//
+		//	2.	Get the key and remove the quotation marks that are added
+		//		by AWS Lambda, since they are not part of the key.
+		//
+		var tmp_quovo_token = data.Payload.slice(1, -1);
+
+		//
+		//	3.	Get the Quovo HTML object
+		//
+		var quovo_connect = document.getElementById('quovo_connect');
+
+		//
+		//	4.	Enable the button now that it is ready to be Clicked.
+		//
+		$('#quovo_connect').removeClass("disabled");
+
+		//
+		//	5.	Prepare the handler with all the necessary data
+		//
+		var quovo_handler = Quovo.create({
+			token: tmp_quovo_token,
+			topInstitutions: 'banks',
+			syncType: 'auth',
+			onAdd: function(error, event) {
+				if(error)
+				{
+					console.error(error);
+				}
+
+				console.log('Connection', event.connection.id, 'added!');
+			}
+		});
+
+		//
+		//	6.	Attach a Click listener to the Quovo button with the handler
+		//
+		quovo_connect.addEventListener('click', function(event) {
+
+			quovo_handler.open();
+
+			event.preventDefault();
+
+		});
+
+	});
+
+});
+
+</script>
